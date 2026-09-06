@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+  <title>Плитка</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<main class="page">
+
+  <h1>Услуги</h1>
+
+  <form
+    class="filter-form"
+    method="GET"
+    action="/insulin/tile"
+  >
+
+    <label for="isf">
+      Фильтр по ISF
+    </label>
+
+    <input
+      id="isf"
+      type="number"
+      step="0.1"
+      name="isf"
+      value="{{isf}}"
+      placeholder="Например, 2.5"
+    >
+
+    <button type="submit">
+      Найти
+    </button>
+
+  </form>
+
+  <section class="tile-grid">
+
+    {{#each services}}
+
+      <a
+        class="tile-card"
+        href="/insulin/feed?id={{id}}"
+      >
+
+        <img
+          src="{{imageUrl}}"
+          alt="{{name}}"
+        >
+
+        <div class="tile-info">
+
+          <h2>{{name}}</h2>
+
+          <p>♥ {{likes.length}}</p>
+
+          <p>ISF: {{isf}}</p>
+
+          <p>
+            Инсулин / 1 ХЕ:
+            {{insulinPerXe}}
+          </p>
+
+        </div>
+
+      </a>
+
+    {{/each}}
+
+  </section>
+
+</main>
+
+<nav class="bottom-nav">
+  <a href="/insulin/feed">Лента</a>
+  <a href="/insulin/add">Добавление</a>
+  <a href="/insulin/tile">Плитка</a>
+</nav>
+
+</body>
+</html>

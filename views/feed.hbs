@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Лента — Инсулин</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<main class="feed-page">
+
+  {{#if service}}
+
+    <article class="feed-card">
+
+      <video
+        class="feed-video"
+        src="{{service.videoUrl}}"
+        autoplay
+        muted
+        loop
+        playsinline
+        controls
+      ></video>
+
+      <div class="feed-overlay">
+
+        <div class="service-content">
+
+          <h1>{{service.name}}</h1>
+
+          <p>{{service.description}}</p>
+
+          <div class="parameters">
+
+            <div class="parameter">
+              <span>ISF</span>
+              <strong>{{service.isf}}</strong>
+            </div>
+
+            <div class="parameter">
+              <span>Инсулин / 1 ХЕ</span>
+              <strong>{{service.insulinPerXe}}</strong>
+            </div>
+
+            <div class="parameter">
+              <span>Цель глюкозы</span>
+              <strong>{{service.targetGlucose}}</strong>
+            </div>
+
+          </div>
+
+          <div class="likes">
+            ♡ {{likesCount}}
+          </div>
+
+          <a
+            class="next-button"
+            href="/insulin/feed?id={{service.id}}&next=true"
+          >
+            Следующий →
+          </a>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  {{else}}
+
+    <p>Услуга не найдена.</p>
+
+  {{/if}}
+
+</main>
+
+<nav class="bottom-nav">
+  <a href="/insulin/feed">Лента</a>
+  <a href="/insulin/add">Добавление</a>
+  <a href="/insulin/tile">Плитка</a>
+</nav>
+
+</body>
+</html>
