@@ -4,6 +4,7 @@ import {
   Query,
   Render,
 } from '@nestjs/common';
+
 import { InsulinService } from './insulin.service';
 
 @Controller('insulin')
@@ -24,18 +25,25 @@ export class InsulinController {
       const serviceId = Number(id);
 
       if (next === 'true') {
-        service = this.insulinService.getNext(serviceId);
+        service =
+          this.insulinService.getNext(serviceId);
       } else {
-        service = this.insulinService.getById(serviceId);
+        service =
+          this.insulinService.getById(serviceId);
       }
     } else {
-      service = this.insulinService.getPublishedServices()[0];
+      service =
+        this.insulinService
+          .getPublishedServices()[0];
     }
 
     return {
       service,
+
       likesCount: service
-        ? this.insulinService.getLikesCount(service)
+        ? this.insulinService.getLikesCount(
+            service,
+          )
         : 0,
     };
   }
@@ -43,27 +51,38 @@ export class InsulinController {
   @Get('add')
   @Render('add')
   getAdd() {
-    const draft = this.insulinService.getDraft();
+    const draft =
+      this.insulinService.getDraft();
 
     return {
       service: draft,
+
       likesCount: draft
-        ? this.insulinService.getLikesCount(draft)
+        ? this.insulinService.getLikesCount(
+            draft,
+          )
         : 0,
     };
   }
 
   @Get('tile')
-  @Render('tile')
-  getTile(@Query('isf') isf?: string) {
-    const isfNumber = isf ? Number(isf) : undefined;
+@Render('tile')
+getTile(
+  @Query('isf') isf?: string,
+) {
+  const isfNumber =
+    isf && isf.trim() !== ''
+      ? Number(isf)
+      : undefined;
 
-    const services =
-      this.insulinService.filterByIsf(isfNumber);
+  const services =
+    this.insulinService.filterByIsf(
+      isfNumber,
+    );
 
-    return {
-      services,
-      isf,
-    };
-  }
+  return {
+    services,
+    isf,
+  };
+}
 }

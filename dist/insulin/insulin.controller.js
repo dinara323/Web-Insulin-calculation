@@ -24,14 +24,18 @@ let InsulinController = class InsulinController {
         if (id) {
             const serviceId = Number(id);
             if (next === 'true') {
-                service = this.insulinService.getNext(serviceId);
+                service =
+                    this.insulinService.getNext(serviceId);
             }
             else {
-                service = this.insulinService.getById(serviceId);
+                service =
+                    this.insulinService.getById(serviceId);
             }
         }
         else {
-            service = this.insulinService.getPublishedServices()[0];
+            service =
+                this.insulinService
+                    .getPublishedServices()[0];
         }
         return {
             service,
@@ -50,7 +54,9 @@ let InsulinController = class InsulinController {
         };
     }
     getTile(isf) {
-        const isfNumber = isf ? Number(isf) : undefined;
+        const isfNumber = isf && isf.trim() !== ''
+            ? Number(isf)
+            : undefined;
         const services = this.insulinService.filterByIsf(isfNumber);
         return {
             services,

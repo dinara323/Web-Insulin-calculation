@@ -1,11 +1,19 @@
+export type CalculationType =
+  | 'xe'
+  | 'correction'
+  | 'combined'
+  | 'individual';
+
 export type InsulinService = {
   id: number;
   name: string;
   description: string;
 
-  isf: number;
-  insulinPerXe: number;
-  targetGlucose: number;
+  calculationType: CalculationType;
+
+  isf: number | null;
+  insulinPerXe: number | null;
+  targetGlucose: number | null;
 
   status: 'черновик' | 'опубликован' | 'удален';
 

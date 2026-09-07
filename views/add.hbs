@@ -2,20 +2,30 @@
 <html lang="ru">
 
 <head>
+
   <meta charset="UTF-8">
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
   >
-  <title>Добавление</title>
-  <link rel="stylesheet" href="/css/style.css">
+
+  <title>Добавление — Инсулин</title>
+
+  <link
+    rel="stylesheet"
+    href="/css/style.css"
+  >
+
 </head>
 
 <body>
 
 <main class="page">
 
-  <h1>Добавление услуги</h1>
+  <h1>
+    Добавление услуги
+  </h1>
 
   {{#if service}}
 
@@ -26,65 +36,100 @@
     <form class="service-form">
 
       <label>
+
         Изображение
+
         <input
           type="text"
           name="imageUrl"
           value="{{service.imageUrl}}"
         >
+
       </label>
 
       <label>
+
         Видео
+
         <input
           type="text"
           name="videoUrl"
           value="{{service.videoUrl}}"
         >
+
       </label>
 
       <label>
+
         Название
+
         <input
           type="text"
           name="name"
           value="{{service.name}}"
         >
+
       </label>
 
       <label>
+
+        Тип расчёта
+
+        <input
+          type="text"
+          name="calculationType"
+          value="{{service.calculationType}}"
+        >
+
+      </label>
+
+      <label>
+
         Описание
-        <textarea name="description">{{service.description}}</textarea>
+
+        <textarea
+          name="description"
+        >{{service.description}}</textarea>
+
       </label>
 
       <label>
+
         ISF
+
         <input
           type="number"
           step="0.1"
           name="isf"
           value="{{service.isf}}"
         >
+
       </label>
 
       <label>
+
         Инсулин на 1 ХЕ
+
         <input
           type="number"
           step="0.1"
           name="insulinPerXe"
           value="{{service.insulinPerXe}}"
         >
+
       </label>
 
       <label>
+
         Целевой уровень глюкозы
+
         <input
           type="number"
           step="0.1"
           name="targetGlucose"
           value="{{service.targetGlucose}}"
         >
+
       </label>
 
       <button type="button">
@@ -95,17 +140,30 @@
 
   {{else}}
 
-    <p>Черновик не найден.</p>
+    <p>
+      Черновик не найден.
+    </p>
 
   {{/if}}
 
 </main>
 
 <nav class="bottom-nav">
-  <a href="/insulin/feed">Лента</a>
-  <a href="/insulin/add">Добавление</a>
-  <a href="/insulin/tile">Плитка</a>
+
+  <a href="/insulin/feed">
+    Лента
+  </a>
+
+  <a href="/insulin/add">
+    Добавление
+  </a>
+
+  <a href="/insulin/tile">
+    Плитка
+  </a>
+
 </nav>
 
 </body>
+
 </html>

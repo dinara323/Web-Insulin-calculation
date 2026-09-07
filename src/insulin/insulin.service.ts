@@ -21,12 +21,14 @@ export class InsulinService {
   getById(id: number): InsulinServiceType | undefined {
     return this.services.find(
       (service) =>
-        service.id === id && service.status !== 'удален',
+        service.id === id &&
+        service.status !== 'удален',
     );
   }
 
   getNext(id: number): InsulinServiceType | undefined {
     const published = this.getPublishedServices();
+
     const currentIndex = published.findIndex(
       (service) => service.id === id,
     );
@@ -35,13 +37,21 @@ export class InsulinService {
       return published[0];
     }
 
-    return published[(currentIndex + 1) % published.length];
+    return published[
+      (currentIndex + 1) % published.length
+    ];
   }
 
-  filterByIsf(isf?: number): InsulinServiceType[] {
-    const published = this.getPublishedServices();
+  filterByIsf(
+    isf?: number,
+  ): InsulinServiceType[] {
+    const published =
+      this.getPublishedServices();
 
-    if (isf === undefined || Number.isNaN(isf)) {
+    if (
+      isf === undefined ||
+      Number.isNaN(isf)
+    ) {
       return published;
     }
 
@@ -50,7 +60,9 @@ export class InsulinService {
     );
   }
 
-  getLikesCount(service: InsulinServiceType): number {
+  getLikesCount(
+    service: InsulinServiceType,
+  ): number {
     return service.likes.length;
   }
 }

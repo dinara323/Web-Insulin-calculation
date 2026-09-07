@@ -1,10 +1,20 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
   <title>Лента — Инсулин</title>
-  <link rel="stylesheet" href="/css/style.css">
+
+  <link
+    rel="stylesheet"
+    href="/css/style.css"
+  >
 </head>
 
 <body>
@@ -29,26 +39,55 @@
 
         <div class="service-content">
 
-          <h1>{{service.name}}</h1>
+          <div class="service-type">
+            {{service.calculationType}}
+          </div>
 
-          <p>{{service.description}}</p>
+          <h1>
+            {{service.name}}
+          </h1>
+
+          <p>
+            {{service.description}}
+          </p>
 
           <div class="parameters">
 
-            <div class="parameter">
-              <span>ISF</span>
-              <strong>{{service.isf}}</strong>
-            </div>
+            {{#if service.insulinPerXe}}
 
-            <div class="parameter">
-              <span>Инсулин / 1 ХЕ</span>
-              <strong>{{service.insulinPerXe}}</strong>
-            </div>
+              <div class="parameter">
+                <span>Инсулин / 1 ХЕ</span>
 
-            <div class="parameter">
-              <span>Цель глюкозы</span>
-              <strong>{{service.targetGlucose}}</strong>
-            </div>
+                <strong>
+                  {{service.insulinPerXe}}
+                </strong>
+              </div>
+
+            {{/if}}
+
+            {{#if service.isf}}
+
+              <div class="parameter">
+                <span>ISF</span>
+
+                <strong>
+                  {{service.isf}}
+                </strong>
+              </div>
+
+            {{/if}}
+
+            {{#if service.targetGlucose}}
+
+              <div class="parameter">
+                <span>Цель глюкозы</span>
+
+                <strong>
+                  {{service.targetGlucose}}
+                </strong>
+              </div>
+
+            {{/if}}
 
           </div>
 
@@ -71,16 +110,28 @@
 
   {{else}}
 
-    <p>Услуга не найдена.</p>
+    <p>
+      Услуга не найдена.
+    </p>
 
   {{/if}}
 
 </main>
 
 <nav class="bottom-nav">
-  <a href="/insulin/feed">Лента</a>
-  <a href="/insulin/add">Добавление</a>
-  <a href="/insulin/tile">Плитка</a>
+
+  <a href="/insulin/feed">
+    Лента
+  </a>
+
+  <a href="/insulin/add">
+    Добавление
+  </a>
+
+  <a href="/insulin/tile">
+    Плитка
+  </a>
+
 </nav>
 
 </body>

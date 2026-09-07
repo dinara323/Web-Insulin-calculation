@@ -20,7 +20,8 @@ let InsulinService = class InsulinService {
         return this.services.find((service) => service.status === 'черновик');
     }
     getById(id) {
-        return this.services.find((service) => service.id === id && service.status !== 'удален');
+        return this.services.find((service) => service.id === id &&
+            service.status !== 'удален');
     }
     getNext(id) {
         const published = this.getPublishedServices();
@@ -32,7 +33,8 @@ let InsulinService = class InsulinService {
     }
     filterByIsf(isf) {
         const published = this.getPublishedServices();
-        if (isf === undefined || Number.isNaN(isf)) {
+        if (isf === undefined ||
+            Number.isNaN(isf)) {
             return published;
         }
         return published.filter((service) => service.isf === isf);
