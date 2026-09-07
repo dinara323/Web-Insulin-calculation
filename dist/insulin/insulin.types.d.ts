@@ -3,6 +3,7 @@ export type InsulinService = {
     id: number;
     name: string;
     description: string;
+    moreText: string;
     calculationType: CalculationType;
     isf: number | null;
     insulinPerXe: number | null;

@@ -3,14 +3,21 @@ import { InsulinService } from './insulin.types';
 export const insulinServices: InsulinService[] = [
   {
     id: 1,
+
     name: 'Расчёт по хлебным единицам',
+
     description:
       'Расчёт пищевой составляющей болюсной дозы по количеству хлебных единиц.',
+
+    moreText:
+      'Подходит для расчёта пищевой составляющей дозы. В расчёте используется количество хлебных единиц и индивидуальный коэффициент инсулина на одну ХЕ. Значение коэффициента задаётся для конкретного варианта расчёта.',
 
     calculationType: 'xe',
 
     isf: null,
+
     insulinPerXe: 1,
+
     targetGlucose: null,
 
     status: 'опубликован',
@@ -26,14 +33,21 @@ export const insulinServices: InsulinService[] = [
 
   {
     id: 2,
+
     name: 'Коррекция уровня глюкозы',
+
     description:
       'Расчёт корректирующей составляющей относительно целевого уровня глюкозы.',
+
+    moreText:
+      'Расчёт учитывает текущее значение глюкозы, целевой уровень и коэффициент чувствительности к инсулину. Дополнительная информация раскрывается по нажатию кнопки «Ещё».',
 
     calculationType: 'correction',
 
     isf: 2.5,
+
     insulinPerXe: null,
+
     targetGlucose: 6,
 
     status: 'опубликован',
@@ -49,14 +63,21 @@ export const insulinServices: InsulinService[] = [
 
   {
     id: 3,
+
     name: 'Расчёт болюса: еда + коррекция',
+
     description:
       'Комбинированный расчёт пищевой и корректирующей составляющих.',
+
+    moreText:
+      'В этом варианте объединяются две составляющие: расчёт на количество хлебных единиц и корректирующая составляющая относительно целевого уровня глюкозы. Параметры расчёта отображаются непосредственно в карточке.',
 
     calculationType: 'combined',
 
     isf: 3,
+
     insulinPerXe: 1.2,
+
     targetGlucose: 6,
 
     status: 'опубликован',
@@ -72,14 +93,21 @@ export const insulinServices: InsulinService[] = [
 
   {
     id: 4,
+
     name: 'Индивидуальный расчёт',
+
     description:
       'Индивидуальный расчёт с учётом активного инсулина.',
+
+    moreText:
+      'В расширенной информации учитывается дополнительный параметр — активный инсулин. Такой вариант предназначен для демонстрации индивидуальной модели расчёта с несколькими заданными параметрами.',
 
     calculationType: 'individual',
 
     isf: 4,
+
     insulinPerXe: 0.8,
+
     targetGlucose: 5.5,
 
     status: 'опубликован',
@@ -95,14 +123,21 @@ export const insulinServices: InsulinService[] = [
 
   {
     id: 5,
+
     name: 'Новый индивидуальный расчёт',
+
     description:
       'Черновая версия услуги с индивидуальными параметрами.',
+
+    moreText:
+      'Это расширенное описание черновой версии услуги. Дополнительные параметры ещё находятся на этапе подготовки и не отображаются в опубликованной ленте.',
 
     calculationType: 'individual',
 
     isf: 3.5,
+
     insulinPerXe: 1.1,
+
     targetGlucose: 5.8,
 
     status: 'черновик',
@@ -118,14 +153,21 @@ export const insulinServices: InsulinService[] = [
 
   {
     id: 6,
+
     name: 'Удалённая услуга',
+
     description:
       'Эта услуга не должна отображаться пользователю.',
+
+    moreText:
+      'Дополнительная информация об удалённой услуге.',
 
     calculationType: 'combined',
 
     isf: 2,
+
     insulinPerXe: 1,
+
     targetGlucose: 6,
 
     status: 'удален',

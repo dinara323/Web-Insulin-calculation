@@ -2,6 +2,7 @@
 <html lang="ru">
 
 <head>
+
   <meta charset="UTF-8">
 
   <meta
@@ -15,6 +16,7 @@
     rel="stylesheet"
     href="/css/style.css"
   >
+
 </head>
 
 <body>
@@ -35,65 +37,113 @@
         controls
       ></video>
 
+
       <div class="feed-overlay">
 
         <div class="service-content">
-
-          <div class="service-type">
-            {{service.calculationType}}
-          </div>
 
           <h1>
             {{service.name}}
           </h1>
 
+
           <p>
             {{service.description}}
           </p>
+
+
+          <!-- =========================
+               ДОПОЛНИТЕЛЬНАЯ ИНФОРМАЦИЯ
+               ========================= -->
+
+          <details class="more-info">
+
+            <summary>
+              Ещё
+            </summary>
+
+            <div class="more-content">
+
+              <p>
+                {{service.moreText}}
+              </p>
+
+            </div>
+
+          </details>
+
+
+          <!-- =========================
+               ПАРАМЕТРЫ
+               ========================= -->
 
           <div class="parameters">
 
             {{#if service.insulinPerXe}}
 
               <div class="parameter">
-                <span>Инсулин / 1 ХЕ</span>
+
+                <span>
+                  Инсулин / 1 ХЕ
+                </span>
 
                 <strong>
                   {{service.insulinPerXe}}
                 </strong>
+
               </div>
 
             {{/if}}
+
 
             {{#if service.isf}}
 
               <div class="parameter">
-                <span>ISF</span>
+
+                <span>
+                  ISF
+                </span>
 
                 <strong>
                   {{service.isf}}
                 </strong>
+
               </div>
 
             {{/if}}
+
 
             {{#if service.targetGlucose}}
 
               <div class="parameter">
-                <span>Цель глюкозы</span>
+
+                <span>
+                  Целевая глюкоза
+                </span>
 
                 <strong>
                   {{service.targetGlucose}}
                 </strong>
+
               </div>
 
             {{/if}}
 
           </div>
 
+
+          <!-- =========================
+               ЛАЙКИ
+               ========================= -->
+
           <div class="likes">
             ♡ {{likesCount}}
           </div>
+
+
+          <!-- =========================
+               СЛЕДУЮЩАЯ КАРТОЧКА
+               ========================= -->
 
           <a
             class="next-button"
@@ -116,23 +166,28 @@
 
   {{/if}}
 
+
+  <!-- =========================
+       НИЖНЯЯ НАВИГАЦИЯ
+       ========================= -->
+
+  <nav class="bottom-nav">
+
+    <a href="/insulin/feed">
+      Лента
+    </a>
+
+    <a href="/insulin/add">
+      Добавление
+    </a>
+
+    <a href="/insulin/tile">
+      Плитка
+    </a>
+
+  </nav>
+
 </main>
-
-<nav class="bottom-nav">
-
-  <a href="/insulin/feed">
-    Лента
-  </a>
-
-  <a href="/insulin/add">
-    Добавление
-  </a>
-
-  <a href="/insulin/tile">
-    Плитка
-  </a>
-
-</nav>
 
 </body>
 </html>
