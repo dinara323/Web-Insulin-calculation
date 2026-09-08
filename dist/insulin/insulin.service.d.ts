@@ -7,4 +7,5 @@ export declare class InsulinService {
     getNext(id: number): InsulinServiceType | undefined;
     filterByIsf(isf?: number): InsulinServiceType[];
     getLikesCount(service: InsulinServiceType): number;
+    addLike(id: number): InsulinServiceType | undefined;
 }

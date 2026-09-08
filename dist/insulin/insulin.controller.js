@@ -19,10 +19,14 @@ let InsulinController = class InsulinController {
     constructor(insulinService) {
         this.insulinService = insulinService;
     }
-    getFeed(id, next) {
+    getFeed(id, next, like, res) {
         let service;
         if (id) {
             const serviceId = Number(id);
+            if (like === 'true') {
+                this.insulinService.addLike(serviceId);
+                return res.redirect(`/insulin/feed?id=${serviceId}`);
+            }
             if (next === 'true') {
                 service =
                     this.insulinService.getNext(serviceId);
@@ -37,56 +41,61 @@ let InsulinController = class InsulinController {
                 this.insulinService
                     .getPublishedServices()[0];
         }
-        return {
+        return res.render('feed', {
             service,
             likesCount: service
                 ? this.insulinService.getLikesCount(service)
                 : 0,
-        };
+        });
     }
-    getAdd() {
+    getAdd(res) {
         const draft = this.insulinService.getDraft();
-        return {
+        return res.render('add', {
             service: draft,
             likesCount: draft
                 ? this.insulinService.getLikesCount(draft)
                 : 0,
-        };
+        });
     }
-    getTile(isf) {
-        const isfNumber = isf && isf.trim() !== ''
+    getTile(isf, res) {
+        const isfNumber = isf !== undefined
             ? Number(isf)
             : undefined;
         const services = this.insulinService.filterByIsf(isfNumber);
-        return {
-            services,
+        const servicesWithLikes = services.map((service) => ({
+            ...service,
+            likesCount: this.insulinService.getLikesCount(service),
+        }));
+        return res.render('tile', {
+            services: servicesWithLikes,
             isf,
-        };
+        });
     }
 };
 exports.InsulinController = InsulinController;
 __decorate([
     (0, common_1.Get)('feed'),
-    (0, common_1.Render)('feed'),
     __param(0, (0, common_1.Query)('id')),
     __param(1, (0, common_1.Query)('next')),
+    __param(2, (0, common_1.Query)('like')),
+    __param(3, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, String, String, Object]),
     __metadata("design:returntype", void 0)
 ], InsulinController.prototype, "getFeed", null);
 __decorate([
     (0, common_1.Get)('add'),
-    (0, common_1.Render)('add'),
+    __param(0, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], InsulinController.prototype, "getAdd", null);
 __decorate([
     (0, common_1.Get)('tile'),
-    (0, common_1.Render)('tile'),
     __param(0, (0, common_1.Query)('isf')),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], InsulinController.prototype, "getTile", null);
 exports.InsulinController = InsulinController = __decorate([

@@ -29,7 +29,8 @@ let InsulinService = class InsulinService {
         if (currentIndex === -1) {
             return published[0];
         }
-        return published[(currentIndex + 1) % published.length];
+        return published[(currentIndex + 1) %
+            published.length];
     }
     filterByIsf(isf) {
         const published = this.getPublishedServices();
@@ -41,6 +42,17 @@ let InsulinService = class InsulinService {
     }
     getLikesCount(service) {
         return service.likes.length;
+    }
+    addLike(id) {
+        const service = this.getById(id);
+        if (!service) {
+            return undefined;
+        }
+        const newLikeId = service.likes.length > 0
+            ? Math.max(...service.likes) + 1
+            : 1;
+        service.likes.push(newLikeId);
+        return service;
     }
 };
 exports.InsulinService = InsulinService;

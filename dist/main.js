@@ -8,6 +8,12 @@ async function bootstrap() {
     app.setBaseViewsDir((0, path_1.join)(__dirname, '..', 'views'));
     app.setViewEngine('hbs');
     app.useStaticAssets((0, path_1.join)(__dirname, '..', 'public'));
+    app.use((req, res, next) => {
+        if (req.path === '/') {
+            return res.redirect('/insulin/feed');
+        }
+        next();
+    });
     await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

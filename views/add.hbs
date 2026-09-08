@@ -24,7 +24,7 @@
 <main class="page">
   <section class="page-card">
   <h1>
-    Добавление услуги
+    Добавление нового расчёта
   </h1>
 
   {{#if service}}
@@ -94,42 +94,32 @@
       </label>
 
       <label>
-
-        ISF
-
-        <input
+        Количество ХЕ
+        <input 
           type="number"
-          step="0.1"
-          name="isf"
-          value="{{service.isf}}"
+          name="XE"
+          placeholder="Введите количество ХЕ"
         >
-
       </label>
 
+
       <label>
-
-        Инсулин на 1 ХЕ
-
-        <input
+        Текущий уровень глюкозы
+        <input 
           type="number"
-          step="0.1"
-          name="insulinPerXe"
-          value="{{service.insulinPerXe}}"
+          name="G_current"
+          placeholder="Введите текущую глюкозу"
         >
-
       </label>
 
+
       <label>
-
-        Целевой уровень глюкозы
-
-        <input
+        Активный инсулин
+        <input 
           type="number"
-          step="0.1"
-          name="targetGlucose"
-          value="{{service.targetGlucose}}"
+          name="activeInsulin"
+          placeholder="Введите активный инсулин"
         >
-
       </label>
 
       <button type="button">
@@ -154,7 +144,7 @@
     Лента
   </a>
 
-  <a href="/insulin/add">
+  <a class="active" href="/insulin/add">
     Добавление
   </a>
 

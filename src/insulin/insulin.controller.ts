@@ -2,8 +2,10 @@ import {
   Controller,
   Get,
   Query,
-  Render,
+  Res,
 } from '@nestjs/common';
+
+import { Response } from 'express';
 
 import { InsulinService } from './insulin.service';
 
@@ -14,75 +16,145 @@ export class InsulinController {
   ) {}
 
   @Get('feed')
-  @Render('feed')
   getFeed(
-    @Query('id') id?: string,
-    @Query('next') next?: string,
+    @Query('id') id: string | undefined,
+    @Query('next') next: string | undefined,
+    @Query('like') like: string | undefined,
+    @Res() res: Response,
   ) {
     let service;
 
     if (id) {
       const serviceId = Number(id);
 
+      /*
+       * Пользователь нажал лайк.
+       * Добавляем лайк только при наличии
+       * параметра like=true.
+       */
+      if (like === 'true') {
+        this.insulinService.addLike(
+          serviceId,
+        );
+
+        /*
+         * После добавления лайка
+         * переходим на обычный URL.
+         *
+         * Поэтому F5 уже не добавит
+         * повторный лайк.
+         */
+        return res.redirect(
+          `/insulin/feed?id=${serviceId}`,
+        );
+      }
+
+      /*
+       * Переход к следующей услуге.
+       */
       if (next === 'true') {
         service =
-          this.insulinService.getNext(serviceId);
+          this.insulinService.getNext(
+            serviceId,
+          );
       } else {
+        /*
+         * Обычное открытие услуги.
+         */
         service =
-          this.insulinService.getById(serviceId);
+          this.insulinService.getById(
+            serviceId,
+          );
       }
     } else {
+      /*
+       * Открываем первую опубликованную
+       * услугу.
+       */
       service =
         this.insulinService
           .getPublishedServices()[0];
     }
 
-    return {
-      service,
+    /*
+     * Передаём данные в шаблон.
+     */
+    return res.render(
+      'feed',
+      {
+        service,
 
-      likesCount: service
-        ? this.insulinService.getLikesCount(
-            service,
-          )
-        : 0,
-    };
+        likesCount: service
+          ? this.insulinService.getLikesCount(
+              service,
+            )
+          : 0,
+      },
+    );
   }
 
+
   @Get('add')
-  @Render('add')
-  getAdd() {
+  getAdd(
+    @Res() res: Response,
+  ) {
     const draft =
       this.insulinService.getDraft();
 
-    return {
-      service: draft,
+    return res.render(
+      'add',
+      {
+        service: draft,
 
-      likesCount: draft
-        ? this.insulinService.getLikesCount(
-            draft,
-          )
-        : 0,
-    };
+        likesCount: draft
+          ? this.insulinService.getLikesCount(
+              draft,
+            )
+          : 0,
+      },
+    );
   }
 
+
   @Get('tile')
-@Render('tile')
-getTile(
-  @Query('isf') isf?: string,
-) {
-  const isfNumber =
-    isf && isf.trim() !== ''
-      ? Number(isf)
-      : undefined;
+  getTile(
+    @Query('isf') isf: string | undefined,
+    @Res() res: Response,
+  ) {
+    const isfNumber =
+      isf !== undefined
+        ? Number(isf)
+        : undefined;
 
-  const services =
-    this.insulinService.filterByIsf(
-      isfNumber,
+    const services =
+      this.insulinService.filterByIsf(
+        isfNumber,
+      );
+
+    /*
+     * Рассчитываем количество
+     * лайков в контроллере.
+     */
+    const servicesWithLikes =
+      services.map(
+        (service) => ({
+          ...service,
+
+          likesCount:
+            this.insulinService.getLikesCount(
+              service,
+            ),
+        }),
+      );
+
+    return res.render(
+      'tile',
+      {
+        services:
+          servicesWithLikes,
+
+        isf,
+      },
     );
-
-  return {
-    services,
-    isf,
-  };
-}
+  }
 }

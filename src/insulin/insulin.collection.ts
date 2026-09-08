@@ -116,7 +116,7 @@ export const insulinServices: InsulinService[] = [
       'http://localhost:9000/media/individual.png',
 
     videoUrl:
-      'http://localhost:9000/media/XRecorder_20260907_01.mp4',
+      'http://localhost:9000/media/XRecorder_20260908_01.mp4',
 
     likes: [1, 2, 7],
   },
@@ -176,7 +176,7 @@ export const insulinServices: InsulinService[] = [
       'http://localhost:9000/media/breakfast.png',
 
     videoUrl:
-      'http://localhost:9000/media/XRecorder_20260907_01.mp4',
+      'http://localhost:9000/media/XRecorder_20260908_01.mp4',
 
     likes: [1],
   },

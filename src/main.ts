@@ -19,6 +19,14 @@ async function bootstrap() {
     join(__dirname, '..', 'public'),
   );
 
+  app.use((req, res, next) => {
+    if (req.path === '/') {
+      return res.redirect('/insulin/feed');
+    }
+
+    next();
+  });
+
   await app.listen(process.env.PORT ?? 3000);
 }
 

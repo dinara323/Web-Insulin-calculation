@@ -55,7 +55,7 @@ exports.insulinServices = [
         targetGlucose: 5.5,
         status: 'опубликован',
         imageUrl: 'http://localhost:9000/media/individual.png',
-        videoUrl: 'http://localhost:9000/media/XRecorder_20260907_01.mp4',
+        videoUrl: 'http://localhost:9000/media/XRecorder_20260908_01.mp4',
         likes: [1, 2, 7],
     },
     {
@@ -83,7 +83,7 @@ exports.insulinServices = [
         targetGlucose: 6,
         status: 'удален',
         imageUrl: 'http://localhost:9000/media/breakfast.png',
-        videoUrl: 'http://localhost:9000/media/XRecorder_20260907_01.mp4',
+        videoUrl: 'http://localhost:9000/media/XRecorder_20260908_01.mp4',
         likes: [1],
     },
 ];

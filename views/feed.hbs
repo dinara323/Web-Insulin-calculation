@@ -2,7 +2,6 @@
 <html lang="ru">
 
 <head>
-
   <meta charset="UTF-8">
 
   <meta
@@ -10,13 +9,14 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>Лента — Инсулин</title>
+  <title>
+    Лента — Инсулин
+  </title>
 
   <link
     rel="stylesheet"
     href="/css/style.css"
   >
-
 </head>
 
 <body>
@@ -37,7 +37,6 @@
         controls
       ></video>
 
-
       <div class="feed-overlay">
 
         <div class="service-content">
@@ -46,15 +45,9 @@
             {{service.name}}
           </h1>
 
-
           <p>
             {{service.description}}
           </p>
-
-
-          <!-- =========================
-               ДОПОЛНИТЕЛЬНАЯ ИНФОРМАЦИЯ
-               ========================= -->
 
           <details class="more-info">
 
@@ -72,10 +65,6 @@
 
           </details>
 
-
-          <!-- =========================
-               ПАРАМЕТРЫ
-               ========================= -->
 
           <div class="parameters">
 
@@ -132,18 +121,18 @@
           </div>
 
 
-          <!-- =========================
-               ЛАЙКИ
-               ========================= -->
+          <!-- КНОПКА ЛАЙКА -->
 
-          <div class="likes">
+          <a
+            class="like-button"
+            href="/insulin/feed?id={{service.id}}&like=true"
+            aria-label="Поставить лайк"
+          >
             ♡ {{likesCount}}
-          </div>
+          </a>
 
 
-          <!-- =========================
-               СЛЕДУЮЩАЯ КАРТОЧКА
-               ========================= -->
+          <!-- СЛЕДУЮЩАЯ УСЛУГА -->
 
           <a
             class="next-button"
@@ -167,13 +156,11 @@
   {{/if}}
 
 
-  <!-- =========================
-       НИЖНЯЯ НАВИГАЦИЯ
-       ========================= -->
+  <!-- НИЖНЯЯ НАВИГАЦИЯ -->
 
   <nav class="bottom-nav">
 
-    <a href="/insulin/feed">
+    <a class="active" href="/insulin/feed">
       Лента
     </a>
 
@@ -190,4 +177,5 @@
 </main>
 
 </body>
+
 </html>

@@ -1,17 +1,9 @@
+import { Response } from 'express';
 import { InsulinService } from './insulin.service';
 export declare class InsulinController {
     private readonly insulinService;
     constructor(insulinService: InsulinService);
-    getFeed(id?: string, next?: string): {
-        service: any;
-        likesCount: number;
-    };
-    getAdd(): {
-        service: import("./insulin.types").InsulinService;
-        likesCount: number;
-    };
-    getTile(isf?: string): {
-        services: import("./insulin.types").InsulinService[];
-        isf: string;
-    };
+    getFeed(id: string | undefined, next: string | undefined, like: string | undefined, res: Response): void;
+    getAdd(res: Response): void;
+    getTile(isf: string | undefined, res: Response): void;
 }
