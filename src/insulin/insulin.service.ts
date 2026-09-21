@@ -62,22 +62,69 @@ export class InsulinService {
     ];
   }
 
-  filterByIsf(
-    isf?: number,
+  filterByAge(
+    ageFrom?: number,
+    ageTo?: number,
   ): InsulinServiceType[] {
     const published =
       this.getPublishedServices();
 
     if (
-      isf === undefined ||
-      Number.isNaN(isf)
+      ageFrom === undefined ||
+      Number.isNaN(ageFrom)
     ) {
       return published;
     }
 
+    if (ageTo === undefined) {
+      return published.filter(
+        (service) =>
+          service.age >= ageFrom,
+      );
+    }
+
     return published.filter(
       (service) =>
-        service.isf === isf,
+        service.age >= ageFrom &&
+        service.age <= ageTo,
+    );
+  }
+
+  calculateXE(
+    age: number,
+    weight: number,
+  ): number {
+    let ageAdjustment = 0;
+
+    if (age >= 60) {
+      ageAdjustment = 0.5;
+    }
+
+    let xe =
+      Math.round(
+        2.5 +
+        0.025 * weight +
+        ageAdjustment,
+      );
+
+    if (xe < 3) {
+      xe = 3;
+    }
+
+    if (xe > 6) {
+      xe = 6;
+    }
+
+    return xe;
+  }
+
+  calculateDose(
+    xe: number,
+    sensitivity_coefficient: number,
+  ): number {
+    return (
+      xe *
+      sensitivity_coefficient
     );
   }
 
@@ -92,7 +139,6 @@ export class InsulinService {
   ):
     | InsulinServiceType
     | undefined {
-
     const service =
       this.getById(id);
 

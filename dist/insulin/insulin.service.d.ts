@@ -5,7 +5,9 @@ export declare class InsulinService {
     getDraft(): InsulinServiceType | undefined;
     getById(id: number): InsulinServiceType | undefined;
     getNext(id: number): InsulinServiceType | undefined;
-    filterByIsf(isf?: number): InsulinServiceType[];
+    filterByAge(ageFrom?: number, ageTo?: number): InsulinServiceType[];
+    calculateXE(age: number, weight: number): number;
+    calculateDose(xe: number, sensitivity_coefficient: number): number;
     getLikesCount(service: InsulinServiceType): number;
     addLike(id: number): InsulinServiceType | undefined;
 }

@@ -1,34 +1,18 @@
-export type CalculationType =
-  | 'xe'
-  | 'correction'
-  | 'combined'
-  | 'individual';
+export type InsulinStatus =
+  | 'черновик'
+  | 'опубликован'
+  | 'удален';
 
-export type InsulinService = {
+export interface InsulinService {
   id: number;
-
   name: string;
-
   description: string;
-
   moreText: string;
-
-  calculationType: CalculationType;
-
-  isf: number | null;
-
-  insulinPerXe: number | null;
-
-  targetGlucose: number | null;
-
-  status:
-    | 'черновик'
-    | 'опубликован'
-    | 'удален';
-
+  age: number;
+  weight: number;
+  sensitivity_coefficient: number;
+  status: InsulinStatus;
   imageUrl: string;
-
   videoUrl: string;
-
   likes: number[];
-};
+}

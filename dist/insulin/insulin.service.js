@@ -32,13 +32,37 @@ let InsulinService = class InsulinService {
         return published[(currentIndex + 1) %
             published.length];
     }
-    filterByIsf(isf) {
+    filterByAge(ageFrom, ageTo) {
         const published = this.getPublishedServices();
-        if (isf === undefined ||
-            Number.isNaN(isf)) {
+        if (ageFrom === undefined ||
+            Number.isNaN(ageFrom)) {
             return published;
         }
-        return published.filter((service) => service.isf === isf);
+        if (ageTo === undefined) {
+            return published.filter((service) => service.age >= ageFrom);
+        }
+        return published.filter((service) => service.age >= ageFrom &&
+            service.age <= ageTo);
+    }
+    calculateXE(age, weight) {
+        let ageAdjustment = 0;
+        if (age >= 60) {
+            ageAdjustment = 0.5;
+        }
+        let xe = Math.round(2.5 +
+            0.025 * weight +
+            ageAdjustment);
+        if (xe < 3) {
+            xe = 3;
+        }
+        if (xe > 6) {
+            xe = 6;
+        }
+        return xe;
+    }
+    calculateDose(xe, sensitivity_coefficient) {
+        return (xe *
+            sensitivity_coefficient);
     }
     getLikesCount(service) {
         return service.likes.length;

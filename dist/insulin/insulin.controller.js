@@ -41,8 +41,16 @@ let InsulinController = class InsulinController {
                 this.insulinService
                     .getPublishedServices()[0];
         }
+        const xe = service
+            ? this.insulinService.calculateXE(service.age, service.weight)
+            : 0;
+        const dose = service
+            ? this.insulinService.calculateDose(xe, service.sensitivity_coefficient)
+            : 0;
         return res.render('feed', {
             service,
+            xe,
+            dose,
             likesCount: service
                 ? this.insulinService.getLikesCount(service)
                 : 0,
@@ -57,18 +65,38 @@ let InsulinController = class InsulinController {
                 : 0,
         });
     }
-    getTile(isf, res) {
-        const isfNumber = isf !== undefined
-            ? Number(isf)
-            : undefined;
-        const services = this.insulinService.filterByIsf(isfNumber);
+    getTile(ageRange, res) {
+        let ageFrom;
+        let ageTo;
+        let ageSlider = 0;
+        if (ageRange === '0') {
+            ageFrom = 18;
+            ageTo = 39;
+            ageSlider = 0;
+        }
+        if (ageRange === '1') {
+            ageFrom = 40;
+            ageTo = 59;
+            ageSlider = 1;
+        }
+        if (ageRange === '2') {
+            ageFrom = 60;
+            ageTo = 89;
+            ageSlider = 2;
+        }
+        if (ageRange === '3') {
+            ageFrom = 80;
+            ageTo = undefined;
+            ageSlider = 3;
+        }
+        const services = this.insulinService.filterByAge(ageFrom, ageTo);
         const servicesWithLikes = services.map((service) => ({
             ...service,
             likesCount: this.insulinService.getLikesCount(service),
         }));
         return res.render('tile', {
             services: servicesWithLikes,
-            isf,
+            ageSlider,
         });
     }
 };
@@ -92,7 +120,7 @@ __decorate([
 ], InsulinController.prototype, "getAdd", null);
 __decorate([
     (0, common_1.Get)('tile'),
-    __param(0, (0, common_1.Query)('isf')),
+    __param(0, (0, common_1.Query)('ageRange')),
     __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),

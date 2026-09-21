@@ -10,7 +10,9 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>Плитка — Инсулин</title>
+  <title>
+    Плитка — Инсулин
+  </title>
 
   <link
     rel="stylesheet"
@@ -23,99 +25,94 @@
 
 <main class="page">
 
-  <h1>
-    Услуги
-  </h1>
-
   <form
-    class="filter-form"
+    class="age-filter"
     method="GET"
     action="/insulin/tile"
   >
 
-    <label for="isf">
-
-      Фильтр по ISF
-
-      <input
-        id="isf"
-        type="number"
-        step="0.1"
-        name="isf"
-        value="{{isf}}"
-        placeholder="Например, 2.5"
-      >
-
+    <label
+      class="age-filter-title"
+      for="ageRange"
+    >
+      Фильтр по возрасту
     </label>
 
-    <button type="submit">
-      Найти
-    </button>
+    <input
+      class="age-slider"
+      type="range"
+      id="ageRange"
+      name="ageRange"
+      min="0"
+      max="3"
+      step="1"
+      value="{{ageSlider}}"
+    >
 
+    <div class="age-range-labels">
+
+      <span>
+        18–39
+      </span>
+
+      <span>
+        40–59
+      </span>
+
+      <span>
+        60–89
+      </span>
+
+      <span>
+        80+
+      </span>
+
+    </div>
+
+    <button
+      class="age-filter-button"
+      type="submit"
+    >
+      Показать
+    </button>
   </form>
 
   <section class="tile-grid">
 
     {{#each services}}
-
       <a
         class="tile-card"
         href="/insulin/feed?id={{id}}"
       >
-
         <img
           src="{{imageUrl}}"
           alt="{{name}}"
         >
-
         <div class="tile-info">
-
-          <div class="service-type">
-            {{calculationType}}
-          </div>
 
           <h2>
             {{name}}
           </h2>
 
           <p>
-            ♥ {{likes.length}}
+            Возраст: {{age}} лет
           </p>
 
-          {{#if isf}}
+          <p>
+            Вес: {{weight}} кг
+          </p>
 
-            <p>
-              ISF: {{isf}}
-            </p>
+          <p>
+            КЧИ: {{sensitivity_coefficient}}
+          </p>
 
-          {{/if}}
-
-          {{#if insulinPerXe}}
-
-            <p>
-              Инсулин / 1 ХЕ:
-              {{insulinPerXe}}
-            </p>
-
-          {{/if}}
-
-          {{#if targetGlucose}}
-
-            <p>
-              Цель:
-              {{targetGlucose}}
-            </p>
-
-          {{/if}}
-
+          <p>
+            ♥ {{likesCount}}
+          </p>
         </div>
-
       </a>
-
     {{/each}}
-
   </section>
-
 </main>
 
 <nav class="bottom-nav">
@@ -128,12 +125,13 @@
     Добавление
   </a>
 
-  <a class="active" href="/insulin/tile">
+  <a
+    class="active"
+    href="/insulin/tile"
+  >
     Плитка
   </a>
 
 </nav>
-
 </body>
-
 </html>

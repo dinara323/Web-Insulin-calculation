@@ -27,62 +27,53 @@ export class InsulinController {
     if (id) {
       const serviceId = Number(id);
 
-      /*
-       * Пользователь нажал лайк.
-       * Добавляем лайк только при наличии
-       * параметра like=true.
-       */
       if (like === 'true') {
         this.insulinService.addLike(
           serviceId,
         );
 
-        /*
-         * После добавления лайка
-         * переходим на обычный URL.
-         *
-         * Поэтому F5 уже не добавит
-         * повторный лайк.
-         */
         return res.redirect(
           `/insulin/feed?id=${serviceId}`,
         );
       }
 
-      /*
-       * Переход к следующей услуге.
-       */
       if (next === 'true') {
         service =
           this.insulinService.getNext(
             serviceId,
           );
       } else {
-        /*
-         * Обычное открытие услуги.
-         */
         service =
           this.insulinService.getById(
             serviceId,
           );
       }
     } else {
-      /*
-       * Открываем первую опубликованную
-       * услугу.
-       */
       service =
         this.insulinService
           .getPublishedServices()[0];
     }
 
-    /*
-     * Передаём данные в шаблон.
-     */
+    const xe = service
+      ? this.insulinService.calculateXE(
+          service.age,
+          service.weight,
+        )
+      : 0;
+
+    const dose = service
+      ? this.insulinService.calculateDose(
+          xe,
+          service.sensitivity_coefficient,
+        )
+      : 0;
+
     return res.render(
       'feed',
       {
         service,
+        xe,
+        dose,
 
         likesCount: service
           ? this.insulinService.getLikesCount(
@@ -92,7 +83,6 @@ export class InsulinController {
       },
     );
   }
-
 
   @Get('add')
   getAdd(
@@ -115,31 +105,49 @@ export class InsulinController {
     );
   }
 
-
   @Get('tile')
   getTile(
-    @Query('isf') isf: string | undefined,
+    @Query('ageRange') ageRange: string | undefined,
     @Res() res: Response,
   ) {
-    const isfNumber =
-      isf !== undefined
-        ? Number(isf)
-        : undefined;
+    let ageFrom: number | undefined;
+    let ageTo: number | undefined;
+    let ageSlider = 0;
+
+    if (ageRange === '0') {
+      ageFrom = 18;
+      ageTo = 39;
+      ageSlider = 0;
+    }
+
+    if (ageRange === '1') {
+      ageFrom = 40;
+      ageTo = 59;
+      ageSlider = 1;
+    }
+
+    if (ageRange === '2') {
+      ageFrom = 60;
+      ageTo = 89;
+      ageSlider = 2;
+    }
+
+    if (ageRange === '3') {
+      ageFrom = 80;
+      ageTo = undefined;
+      ageSlider = 3;
+    }
 
     const services =
-      this.insulinService.filterByIsf(
-        isfNumber,
+      this.insulinService.filterByAge(
+        ageFrom,
+        ageTo,
       );
 
-    /*
-     * Рассчитываем количество
-     * лайков в контроллере.
-     */
     const servicesWithLikes =
       services.map(
         (service) => ({
           ...service,
-
           likesCount:
             this.insulinService.getLikesCount(
               service,
@@ -152,8 +160,7 @@ export class InsulinController {
       {
         services:
           servicesWithLikes,
-
-        isf,
+        ageSlider,
       },
     );
   }

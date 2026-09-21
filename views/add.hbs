@@ -10,7 +10,9 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>Добавление — Инсулин</title>
+  <title>
+    Добавление — Инсулин
+  </title>
 
   <link
     rel="stylesheet"
@@ -22,138 +24,156 @@
 <body>
 
 <main class="page">
+
   <section class="page-card">
-  <h1>
-    Добавление нового расчёта
-  </h1>
 
-  {{#if service}}
+    <h1>
+      Новый расчёт
+    </h1>
 
-    <div class="draft-badge">
-      ЧЕРНОВИК
-    </div>
+    {{#if service}}
 
-    <form class="service-form">
+      <div class="draft-badge">
+        ЧЕРНОВИК
+      </div>
 
-      <label>
+      <form class="service-form">
 
-        Изображение
+        <div class="media-upload">
 
-        <input
-          type="text"
-          name="imageUrl"
-          value="{{service.imageUrl}}"
-        >
+          <label class="media-upload-box">
 
-      </label>
+            <input
+              type="file"
+              name="image"
+              accept="image/*"
+            >
 
-      <label>
+            <img
+              class="media-upload-background"
+              src="{{service.imageUrl}}"
+              alt=""
+            >
+            <div class="media-upload-overlay"></div>
+            <div class="media-upload-content">
 
-        Видео
+              <span class="media-upload-icon">
+                +
+              </span>
+              <span class="media-upload-text">
+                Добавить фото
+              </span>
 
-        <input
-          type="text"
-          name="videoUrl"
-          value="{{service.videoUrl}}"
-        >
+            </div>
+          </label>
 
-      </label>
+          <label class="media-upload-box">
 
-      <label>
+            <input
+              type="file"
+              name="video"
+              accept="video/*"
+            >
 
-        Название
+            <video
+              class="media-upload-background"
+              src="{{service.videoUrl}}"
+              muted
+              loop
+              playsinline
+              autoplay
+            ></video>
 
-        <input
-          type="text"
-          name="name"
-          value="{{service.name}}"
-        >
+            <div class="media-upload-overlay"></div>
 
-      </label>
+            <div class="media-upload-content">
 
-      <label>
+              <span class="media-upload-icon">
+                +
+              </span>
 
-        Тип расчёта
+              <span class="media-upload-text">
+                Добавить видео
+              </span>
+            </div>
+          </label>
 
-        <input
-          type="text"
-          name="calculationType"
-          value="{{service.calculationType}}"
-        >
+        </div>
 
-      </label>
+        <label>
 
-      <label>
+          Название
 
-        Описание
+          <input
+            type="text"
+            name="name"
+            value="{{service.name}}"
+            placeholder="Введите название"
+          >
 
-        <textarea
-          name="description"
-        >{{service.description}}</textarea>
+        </label>
 
-      </label>
+        <label>
 
-      <label>
-        Количество ХЕ
-        <input 
-          type="number"
-          name="XE"
-          placeholder="Введите количество ХЕ"
-        >
-      </label>
+          Описание
 
+          <textarea
+            name="description"
+            placeholder="Введите короткое описание"
+          >{{service.description}}</textarea>
 
-      <label>
-        Текущий уровень глюкозы
-        <input 
-          type="number"
-          name="G_current"
-          placeholder="Введите текущую глюкозу"
-        >
-      </label>
+        </label>
 
+        <label>
+          Возраст
+          <input
+            type="number"
+            name="age"
+            min="18"
+            max="100"
+            placeholder="Введите возраст"
+          >
+        </label>
 
-      <label>
-        Активный инсулин
-        <input 
-          type="number"
-          name="activeInsulin"
-          placeholder="Введите активный инсулин"
-        >
-      </label>
+        <label>
 
-      <button type="button">
-        Сохранить черновик
-      </button>
+          Вес, кг
 
-    </form>
+          <input
+            type="number"
+            name="weight"
+            min="1"
+            step="0.1"
+            placeholder="Введите вес"
+          >
 
-  {{else}}
+        </label>
+      </form>
+    {{else}}
+      <p>
+        Черновик не найден.
+      </p>
+    {{/if}}
 
-    <p>
-      Черновик не найден.
-    </p>
-
-  {{/if}}
   </section>
+
+  <nav class="bottom-nav">
+    <a href="/insulin/feed">
+      Лента
+    </a>
+
+    <a
+      class="active"
+      href="/insulin/add"
+    >
+      Добавление
+    </a>
+
+    <a href="/insulin/tile">
+      Плитка
+    </a>
+
+  </nav>
 </main>
-
-<nav class="bottom-nav">
-
-  <a href="/insulin/feed">
-    Лента
-  </a>
-
-  <a class="active" href="/insulin/add">
-    Добавление
-  </a>
-
-  <a href="/insulin/tile">
-    Плитка
-  </a>
-
-</nav>
-
 </body>
-
 </html>

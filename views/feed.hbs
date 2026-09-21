@@ -45,14 +45,14 @@
             {{service.name}}
           </h1>
 
-          <p>
+          <p class="feed-description">
             {{service.description}}
           </p>
 
           <details class="more-info">
 
             <summary>
-              Ещё
+              Ещё ↓
             </summary>
 
             <div class="more-content">
@@ -60,107 +60,88 @@
               <p>
                 {{service.moreText}}
               </p>
-
             </div>
 
           </details>
 
+        </div>
 
-          <div class="parameters">
+        <div class="feed-side-info">
 
-            {{#if service.insulinPerXe}}
+          <div class="parameter">
 
-              <div class="parameter">
+            <span>
+              Возраст
+            </span>
 
-                <span>
-                  Инсулин / 1 ХЕ
-                </span>
-
-                <strong>
-                  {{service.insulinPerXe}}
-                </strong>
-
-              </div>
-
-            {{/if}}
-
-
-            {{#if service.isf}}
-
-              <div class="parameter">
-
-                <span>
-                  ISF
-                </span>
-
-                <strong>
-                  {{service.isf}}
-                </strong>
-
-              </div>
-
-            {{/if}}
-
-
-            {{#if service.targetGlucose}}
-
-              <div class="parameter">
-
-                <span>
-                  Целевая глюкоза
-                </span>
-
-                <strong>
-                  {{service.targetGlucose}}
-                </strong>
-
-              </div>
-
-            {{/if}}
+            <strong>
+              {{service.age}} лет
+            </strong>
 
           </div>
 
+          <div class="parameter">
 
-          <!-- КНОПКА ЛАЙКА -->
+            <span>
+              Вес
+            </span>
+
+            <strong>
+              {{service.weight}} кг
+            </strong>
+
+          </div>
+
+          <div class="parameter">
+
+            <span>
+              КЧИ
+            </span>
+
+            <strong>
+              {{service.sensitivity_coefficient}}
+            </strong>
+
+          </div>
 
           <a
             class="like-button"
             href="/insulin/feed?id={{service.id}}&like=true"
-            aria-label="Поставить лайк"
           >
-            ♡ {{likesCount}}
+
+            <span>
+              ♡
+            </span>
+
+            <span>
+              {{likesCount}}
+            </span>
+
           </a>
-
-
-          <!-- СЛЕДУЮЩАЯ УСЛУГА -->
 
           <a
             class="next-button"
             href="/insulin/feed?id={{service.id}}&next=true"
           >
-            Следующий →
+            →
           </a>
 
         </div>
-
       </div>
-
     </article>
 
   {{else}}
-
     <p>
       Услуга не найдена.
     </p>
-
   {{/if}}
-
-
-  <!-- НИЖНЯЯ НАВИГАЦИЯ -->
 
   <nav class="bottom-nav">
 
-    <a class="active" href="/insulin/feed">
+    <a
+      class="active"
+      href="/insulin/feed"
+    >
       Лента
     </a>
 
@@ -171,11 +152,8 @@
     <a href="/insulin/tile">
       Плитка
     </a>
-
   </nav>
-
 </main>
-
 </body>
 
 </html>

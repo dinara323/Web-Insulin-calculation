@@ -5,5 +5,5 @@ export declare class InsulinController {
     constructor(insulinService: InsulinService);
     getFeed(id: string | undefined, next: string | undefined, like: string | undefined, res: Response): void;
     getAdd(res: Response): void;
-    getTile(isf: string | undefined, res: Response): void;
+    getTile(ageRange: string | undefined, res: Response): void;
 }
