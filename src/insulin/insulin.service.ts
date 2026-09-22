@@ -1,13 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { InjectDataSource } from '@nestjs/typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-
-import {
-  Repository,
-  DataSource,
-  Between,
-  MoreThanOrEqual,
-} from 'typeorm';
+import { Repository,Between,MoreThanOrEqual, } from 'typeorm';
 
 import { InsulinServiceEntity } from './entities/insulin-service.entity';
 import { InsulinLike } from './entities/insulin-like.entity';
@@ -28,9 +21,6 @@ export class InsulinService {
     @InjectRepository(InsulinLike)
     private readonly likeRepository:
       Repository<InsulinLike>,
-
-    @InjectDataSource()
-    private readonly dataSource: DataSource,
   ) {}
 
   async getFirstPublished() {
@@ -38,7 +28,6 @@ export class InsulinService {
       where: {
         status: 'опубликован',
       },
-
       order: {
         id: 'ASC',
       },
@@ -50,7 +39,6 @@ export class InsulinService {
       where: {
         status: 'опубликован',
       },
-
       order: {
         id: 'ASC',
       },
@@ -65,49 +53,65 @@ export class InsulinService {
       },
     });
   }
-
+  
   async getById(id: number) {
-    return this.serviceRepository.findOne({
-      where: {
-        id,
-        status: 'опубликован',
-      },
-    });
+    const rows =
+      await this.serviceRepository.query(
+        `
+          SELECT
+            id,
+            name,
+            description,
+            status,
+            image_url AS "imageUrl",
+            video_url AS "videoUrl",
+            age,
+            weight,
+            sensitivity_coefficient AS "sensitivityCoefficient",
+            created_at AS "createdAt",
+            creator,
+            formed_at AS "formedAt"
+          FROM insulin_services
+          WHERE id = $1
+            AND status = 'опубликован'
+        `,
+        [id],
+      );
+
+    return rows[0] ?? null;
   }
 
   async getNext(id: number) {
-    const services =
-      await this.serviceRepository.find({
-        where: {
-          status: 'опубликован',
-        },
-
-        order: {
-          id: 'ASC',
-        },
-      });
-
-    const currentIndex =
-      services.findIndex(
-        (service) =>
-          service.id === id,
+    const rows =
+      await this.serviceRepository.query(
+        `
+          SELECT
+            id,
+            name,
+            description,
+            status,
+            image_url AS "imageUrl",
+            video_url AS "videoUrl",
+            age,
+            weight,
+            sensitivity_coefficient AS "sensitivityCoefficient",
+            created_at AS "createdAt",
+            creator,
+            formed_at AS "formedAt"
+          FROM insulin_services
+          WHERE status = 'опубликован'
+            AND id > $1
+          ORDER BY id ASC
+          LIMIT 1
+        `,
+        [id],
       );
 
-    if (services.length === 0) {
-      return undefined;
+    if (rows[0]) {
+      return rows[0];
     }
 
-    if (
-      currentIndex === -1 ||
-      currentIndex ===
-        services.length - 1
-    ) {
-      return services[0];
-    }
-
-    return services[
-      currentIndex + 1
-    ];
+    return this.getFirstPublished();
   }
 
   async filterByAge(
@@ -128,7 +132,6 @@ export class InsulinService {
           status: 'опубликован',
           age: MoreThanOrEqual(ageFrom),
         },
-
         order: {
           id: 'ASC',
         },
@@ -143,22 +146,20 @@ export class InsulinService {
           ageTo,
         ),
       },
-
       order: {
         id: 'ASC',
       },
     });
   }
 
+  // Создание черновика
   async createDraft(
     name: string,
   ) {
     const draft =
       this.serviceRepository.create({
         name,
-
         description: '',
-
         status: 'черновик',
 
         imageUrl:
@@ -168,11 +169,8 @@ export class InsulinService {
           this.defaultVideoUrl,
 
         age: null,
-
         weight: null,
-
-        sensitivityCoefficient:
-          null,
+        sensitivityCoefficient: null,
 
         creator: 1,
 
@@ -187,6 +185,7 @@ export class InsulinService {
     );
   }
 
+  // Публикация черновика
   async publish(
     id: number,
     name: string,
@@ -234,7 +233,7 @@ export class InsulinService {
   async deleteBySql(
     id: number,
   ) {
-    await this.dataSource.query(
+    await this.serviceRepository.query(
       `
         UPDATE insulin_services
         SET status = 'удален'

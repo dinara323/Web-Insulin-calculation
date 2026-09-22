@@ -1,7 +1,6 @@
 import {
   Entity,
   PrimaryColumn,
-  Column,
 } from 'typeorm';
 
 @Entity('insulin_likes')

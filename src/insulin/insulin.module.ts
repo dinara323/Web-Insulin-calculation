@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { InsulinController } from './insulin.controller';
@@ -17,9 +16,11 @@ import { InsulinLike } from './entities/insulin-like.entity';
       InsulinLike,
     ]),
   ],
+
   controllers: [
     InsulinController,
   ],
+
   providers: [
     InsulinService,
   ],

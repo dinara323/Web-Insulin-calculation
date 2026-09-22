@@ -2,9 +2,7 @@
 <html lang="ru">
 
 <head>
-
   <meta charset="UTF-8">
-
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
@@ -20,6 +18,7 @@
   >
 
   <style>
+
     .media-fields {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -49,18 +48,38 @@
       justify-content: center;
     }
 
-    .media-box:hover {
-      border-color: #555;
+    .media-box::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.25;
+      z-index: 1;
+    }
+
+    .media-box.image-box::before {
+      background-image:
+        url('http://localhost:9000/media/breakfast.png');
+    }
+
+    .media-box.video-box::before {
+      background-image:
+        url('http://localhost:9000/media/breakfast.png');
     }
 
     .media-preview {
+      position: relative;
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: none;
+      z-index: 2;
     }
 
     .media-plus {
+      position: relative;
+      z-index: 3;
       font-size: 42px;
       font-weight: 300;
       color: #777;
@@ -72,6 +91,7 @@
       text-align: center;
       font-size: 14px;
     }
+
   </style>
 
 </head>
@@ -103,7 +123,6 @@
       >
 
       <label>
-
         Наименование услуги
 
         <input
@@ -112,11 +131,9 @@
           value="{{service.name}}"
           required
         >
-
       </label>
 
       <label>
-
         Тип услуги
 
         <select
@@ -157,7 +174,6 @@
       </label>
 
       <label>
-
         Возраст
 
         <input
@@ -167,11 +183,9 @@
           required
           value="{{service.age}}"
         >
-
       </label>
 
       <label>
-
         Вес, кг
 
         <input
@@ -182,11 +196,9 @@
           required
           value="{{service.weight}}"
         >
-
       </label>
 
       <label>
-
         Краткое описание
 
         <textarea
@@ -218,7 +230,6 @@
     >
 
       <label>
-
         Название
 
         <input
@@ -227,15 +238,16 @@
           required
           placeholder="Введите название"
         >
-
       </label>
 
       <div class="media-fields">
 
+        <!-- ФОТО -->
+
         <div class="media-field">
 
           <label
-            class="media-box"
+            class="media-box image-box"
             for="imageInput"
           >
 
@@ -267,10 +279,12 @@
 
         </div>
 
+        <!-- ВИДЕО -->
+
         <div class="media-field">
 
           <label
-            class="media-box"
+            class="media-box video-box"
             for="videoInput"
           >
 
@@ -348,6 +362,7 @@
     document.getElementById('imagePlus');
 
   if (imageInput) {
+
     imageInput.addEventListener(
       'change',
       function () {
@@ -367,8 +382,10 @@
 
         imagePlus.style.display =
           'none';
+
       },
     );
+
   }
 
   const videoInput =
@@ -381,6 +398,7 @@
     document.getElementById('videoPlus');
 
   if (videoInput) {
+
     videoInput.addEventListener(
       'change',
       function () {
@@ -398,10 +416,16 @@
         videoPreview.style.display =
           'block';
 
+        videoPreview.load();
+
+        videoPreview.play();
+
         videoPlus.style.display =
           'none';
+
       },
     );
+
   }
 
 </script>

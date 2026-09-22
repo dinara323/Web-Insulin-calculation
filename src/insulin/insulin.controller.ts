@@ -52,7 +52,9 @@ export class InsulinController {
     if (!service) {
       return res
         .status(404)
-        .send('Услуга не найдена');
+        .send(
+          'Услуга не найдена',
+        );
     }
 
     const xe =
@@ -138,6 +140,7 @@ export class InsulinController {
       'add',
       {
         service,
+
         selectedCoefficient1,
         selectedCoefficient2,
         selectedCoefficient3,
@@ -255,7 +258,9 @@ export class InsulinController {
     @Body('weight')
     weight: string,
 
-    @Body('sensitivityCoefficient')
+    @Body(
+      'sensitivityCoefficient',
+    )
     sensitivityCoefficient: string,
 
     @Res()
@@ -267,7 +272,9 @@ export class InsulinController {
       description,
       Number(age),
       Number(weight),
-      Number(sensitivityCoefficient),
+      Number(
+        sensitivityCoefficient,
+      ),
     );
 
     return res.redirect(
@@ -275,7 +282,8 @@ export class InsulinController {
     );
   }
 
-  // 6. POST — логическое удаление через SQL UPDATE
+  // 6. POST — логическое удаление
+  // через SQL UPDATE
   @Post('delete')
   async delete(
     @Body('id')

@@ -1,7 +1,7 @@
 import {
+  Column,
   Entity,
   PrimaryGeneratedColumn,
-  Column,
 } from 'typeorm';
 
 @Entity('insulin_services')
@@ -60,8 +60,7 @@ export class InsulinServiceEntity {
     type: 'integer',
     nullable: true,
   })
-  sensitivityCoefficient:
-    number | null;
+  sensitivityCoefficient: number | null;
 
   @Column({
     name: 'created_at',
