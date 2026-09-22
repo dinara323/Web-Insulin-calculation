@@ -2,39 +2,37 @@ import 'dotenv/config';
 
 import { DataSource } from 'typeorm';
 
+import { InsulinUser } from '../src/insulin/entities/insulin-user.entity';
 import { InsulinServiceEntity } from '../src/insulin/entities/insulin-service.entity';
-import { InsulinUserEntity } from '../src/insulin/entities/insulin-user.entity';
-import { InsulinLikeEntity } from '../src/insulin/entities/insulin-like.entity';
+import { InsulinLike } from '../src/insulin/entities/insulin-like.entity';
 
-const dataSource = new DataSource({
-  type: 'postgres',
+const dataSource =
+  new DataSource({
+    type: 'postgres',
 
-  host:
-    process.env.DB_HOST ||
-    'localhost',
+    host: process.env.DB_HOST,
 
-  port: Number(
-    process.env.DB_PORT ||
-      '5432',
-  ),
+    port: Number(
+      process.env.DB_PORT,
+    ),
 
-  username:
-    process.env.DB_USERNAME,
+    username:
+      process.env.DB_USERNAME,
 
-  password:
-    process.env.DB_PASSWORD,
+    password:
+      process.env.DB_PASSWORD,
 
-  database:
-    process.env.DB_DATABASE,
+    database:
+      process.env.DB_DATABASE,
 
-  entities: [
-    InsulinServiceEntity,
-    InsulinUserEntity,
-    InsulinLikeEntity,
-  ],
+    entities: [
+      InsulinUser,
+      InsulinServiceEntity,
+      InsulinLike,
+    ],
 
-  synchronize: true,
-});
+    synchronize: true,
+  });
 
 async function run() {
   await dataSource.initialize();
@@ -42,17 +40,15 @@ async function run() {
   await dataSource.synchronize();
 
   console.log(
-    'Миграции выполнены успешно.',
+    'База данных синхронизирована.',
   );
 
   await dataSource.destroy();
-
-  process.exit(0);
 }
 
 run().catch((error) => {
   console.error(
-    'Ошибка миграций:',
+    'Ошибка синхронизации:',
     error,
   );
 

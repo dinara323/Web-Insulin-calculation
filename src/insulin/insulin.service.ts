@@ -1,92 +1,247 @@
 import { Injectable } from '@nestjs/common';
-
-import { insulinServices } from './insulin.collection';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import {
-  InsulinService as InsulinServiceType,
-} from './insulin.types';
+  Repository,
+  DataSource,
+  Between,
+  MoreThanOrEqual,
+} from 'typeorm';
+
+import { InsulinServiceEntity } from './entities/insulin-service.entity';
+import { InsulinLike } from './entities/insulin-like.entity';
 
 @Injectable()
 export class InsulinService {
-  private readonly services = insulinServices;
+  private readonly defaultImageUrl =
+    'http://localhost:9000/media/breakfast.png';
 
-  getPublishedServices(): InsulinServiceType[] {
-    return this.services.filter(
-      (service) =>
-        service.status === 'опубликован',
-    );
+  private readonly defaultVideoUrl =
+    'http://localhost:9000/media/breakfast.mp4';
+
+  constructor(
+    @InjectRepository(InsulinServiceEntity)
+    private readonly serviceRepository:
+      Repository<InsulinServiceEntity>,
+
+    @InjectRepository(InsulinLike)
+    private readonly likeRepository:
+      Repository<InsulinLike>,
+
+    @InjectDataSource()
+    private readonly dataSource: DataSource,
+  ) {}
+
+  async getFirstPublished() {
+    return this.serviceRepository.findOne({
+      where: {
+        status: 'опубликован',
+      },
+
+      order: {
+        id: 'ASC',
+      },
+    });
   }
 
-  getDraft():
-    | InsulinServiceType
-    | undefined {
-    return this.services.find(
-      (service) =>
-        service.status === 'черновик',
-    );
+  async getPublishedServices() {
+    return this.serviceRepository.find({
+      where: {
+        status: 'опубликован',
+      },
+
+      order: {
+        id: 'ASC',
+      },
+    });
   }
 
-  getById(
-    id: number,
-  ):
-    | InsulinServiceType
-    | undefined {
-    return this.services.find(
-      (service) =>
-        service.id === id &&
-        service.status !== 'удален',
-    );
+  async getDraft() {
+    return this.serviceRepository.findOne({
+      where: {
+        status: 'черновик',
+        creator: 1,
+      },
+    });
   }
 
-  getNext(
-    id: number,
-  ):
-    | InsulinServiceType
-    | undefined {
-    const published =
-      this.getPublishedServices();
+  async getById(id: number) {
+    return this.serviceRepository.findOne({
+      where: {
+        id,
+        status: 'опубликован',
+      },
+    });
+  }
+
+  async getNext(id: number) {
+    const services =
+      await this.serviceRepository.find({
+        where: {
+          status: 'опубликован',
+        },
+
+        order: {
+          id: 'ASC',
+        },
+      });
 
     const currentIndex =
-      published.findIndex(
+      services.findIndex(
         (service) =>
           service.id === id,
       );
 
-    if (currentIndex === -1) {
-      return published[0];
+    if (services.length === 0) {
+      return undefined;
     }
 
-    return published[
-      (currentIndex + 1) %
-        published.length
+    if (
+      currentIndex === -1 ||
+      currentIndex ===
+        services.length - 1
+    ) {
+      return services[0];
+    }
+
+    return services[
+      currentIndex + 1
     ];
   }
 
-  filterByAge(
+  async filterByAge(
     ageFrom?: number,
     ageTo?: number,
-  ): InsulinServiceType[] {
-    const published =
-      this.getPublishedServices();
+  ) {
+    if (
+      ageFrom === undefined
+    ) {
+      return this.getPublishedServices();
+    }
 
     if (
-      ageFrom === undefined ||
-      Number.isNaN(ageFrom)
+      ageTo === undefined
     ) {
-      return published;
+      return this.serviceRepository.find({
+        where: {
+          status: 'опубликован',
+          age: MoreThanOrEqual(ageFrom),
+        },
+
+        order: {
+          id: 'ASC',
+        },
+      });
     }
 
-    if (ageTo === undefined) {
-      return published.filter(
-        (service) =>
-          service.age >= ageFrom,
-      );
+    return this.serviceRepository.find({
+      where: {
+        status: 'опубликован',
+        age: Between(
+          ageFrom,
+          ageTo,
+        ),
+      },
+
+      order: {
+        id: 'ASC',
+      },
+    });
+  }
+
+  async createDraft(
+    name: string,
+  ) {
+    const draft =
+      this.serviceRepository.create({
+        name,
+
+        description: '',
+
+        status: 'черновик',
+
+        imageUrl:
+          this.defaultImageUrl,
+
+        videoUrl:
+          this.defaultVideoUrl,
+
+        age: null,
+
+        weight: null,
+
+        sensitivityCoefficient:
+          null,
+
+        creator: 1,
+
+        createdAt:
+          new Date(),
+
+        formedAt: null,
+      });
+
+    return this.serviceRepository.save(
+      draft,
+    );
+  }
+
+  async publish(
+    id: number,
+    name: string,
+    description: string,
+    age: number,
+    weight: number,
+    sensitivityCoefficient: number,
+  ) {
+    const service =
+      await this.serviceRepository.findOne({
+        where: {
+          id,
+          status: 'черновик',
+          creator: 1,
+        },
+      });
+
+    if (!service) {
+      return undefined;
     }
 
-    return published.filter(
-      (service) =>
-        service.age >= ageFrom &&
-        service.age <= ageTo,
+    service.name = name;
+
+    service.description =
+      description;
+
+    service.age = age;
+
+    service.weight = weight;
+
+    service.sensitivityCoefficient =
+      sensitivityCoefficient;
+
+    service.status =
+      'опубликован';
+
+    service.formedAt =
+      new Date();
+
+    return this.serviceRepository.save(
+      service,
+    );
+  }
+
+  async deleteBySql(
+    id: number,
+  ) {
+    await this.dataSource.query(
+      `
+        UPDATE insulin_services
+        SET status = 'удален'
+        WHERE id = $1
+          AND status = 'опубликован'
+      `,
+      [id],
     );
   }
 
@@ -103,8 +258,8 @@ export class InsulinService {
     let xe =
       Math.round(
         2.5 +
-        0.025 * weight +
-        ageAdjustment,
+          0.025 * weight +
+          ageAdjustment,
       );
 
     if (xe < 3) {
@@ -120,43 +275,21 @@ export class InsulinService {
 
   calculateDose(
     xe: number,
-    sensitivity_coefficient: number,
+    sensitivityCoefficient: number,
   ): number {
     return (
       xe *
-      sensitivity_coefficient
+      sensitivityCoefficient
     );
   }
 
-  getLikesCount(
-    service: InsulinServiceType,
-  ): number {
-    return service.likes.length;
-  }
-
-  addLike(
-    id: number,
-  ):
-    | InsulinServiceType
-    | undefined {
-    const service =
-      this.getById(id);
-
-    if (!service) {
-      return undefined;
-    }
-
-    const newLikeId =
-      service.likes.length > 0
-        ? Math.max(
-            ...service.likes,
-          ) + 1
-        : 1;
-
-    service.likes.push(
-      newLikeId,
-    );
-
-    return service;
+  async getLikesCount(
+    serviceId: number,
+  ): Promise<number> {
+    return this.likeRepository.count({
+      where: {
+        serviceId,
+      },
+    });
   }
 }

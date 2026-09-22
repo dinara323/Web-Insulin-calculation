@@ -1,18 +1,20 @@
 import {
-  Column,
   Entity,
   PrimaryColumn,
+  Column,
 } from 'typeorm';
 
 @Entity('insulin_likes')
-export class InsulinLikeEntity {
+export class InsulinLike {
   @PrimaryColumn({
+    name: 'user_id',
     type: 'integer',
   })
-  user_id: number;
+  userId: number;
 
   @PrimaryColumn({
+    name: 'service_id',
     type: 'integer',
   })
-  service_id: number;
+  serviceId: number;
 }

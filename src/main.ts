@@ -11,14 +11,14 @@ async function bootstrap() {
     );
 
   app.setBaseViewsDir(
-    join(__dirname, '..', 'views'),
-  );
+    join(process.cwd(), 'views'),
+);
 
   app.setViewEngine('hbs');
 
   app.useStaticAssets(
-    join(__dirname, '..', 'public'),
-  );
+    join(process.cwd(), 'public'),
+);
 
   app.use((req, res, next) => {
     if (req.path === '/') {

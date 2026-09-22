@@ -1,17 +1,23 @@
 import {
-  Column,
   Entity,
   PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
 } from 'typeorm';
 
+import { InsulinLike } from './insulin-like.entity';
+
+
 @Entity('insulin_users')
-export class InsulinUserEntity {
+export class InsulinUser {
+
+
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({
-    type: 'varchar',
-    length: 100,
+    length:100,
   })
-  name: string;
+  name:string;
+
 }

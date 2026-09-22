@@ -60,7 +60,7 @@
       </span>
 
       <span>
-        60–89
+        60–79
       </span>
 
       <span>
@@ -75,44 +75,75 @@
     >
       Показать
     </button>
+
   </form>
 
   <section class="tile-grid">
 
     {{#each services}}
-      <a
-        class="tile-card"
-        href="/insulin/feed?id={{id}}"
-      >
-        <img
-          src="{{imageUrl}}"
-          alt="{{name}}"
+
+      <article class="tile-card">
+
+        <a
+          href="/insulin/feed?id={{id}}"
         >
-        <div class="tile-info">
 
-          <h2>
-            {{name}}
-          </h2>
+          <img
+            src="{{imageUrl}}"
+            alt="{{name}}"
+          >
 
-          <p>
-            Возраст: {{age}} лет
-          </p>
+          <div class="tile-info">
 
-          <p>
-            Вес: {{weight}} кг
-          </p>
+            <h2>
+              {{name}}
+            </h2>
 
-          <p>
-            КЧИ: {{sensitivity_coefficient}}
-          </p>
+            <p>
+              Возраст: {{age}} лет
+            </p>
 
-          <p>
-            ♥ {{likesCount}}
-          </p>
-        </div>
-      </a>
+            <p>
+              Вес: {{weight}} кг
+            </p>
+
+            <p>
+              КЧИ: {{sensitivityCoefficient}}
+            </p>
+
+            <p>
+              ♥ {{likesCount}}
+            </p>
+
+          </div>
+
+        </a>
+
+        <form
+          method="POST"
+          action="/insulin/delete"
+        >
+
+          <input
+            type="hidden"
+            name="id"
+            value="{{id}}"
+          >
+
+          <button
+            type="submit"
+          >
+            Удалить
+          </button>
+
+        </form>
+
+      </article>
+
     {{/each}}
+
   </section>
+
 </main>
 
 <nav class="bottom-nav">
@@ -133,5 +164,7 @@
   </a>
 
 </nav>
+
 </body>
+
 </html>

@@ -1,7 +1,7 @@
 import {
-  Column,
   Entity,
   PrimaryGeneratedColumn,
+  Column,
 } from 'typeorm';
 
 @Entity('insulin_services')
@@ -28,38 +28,46 @@ export class InsulinServiceEntity {
   status: string;
 
   @Column({
+    name: 'image_url',
     type: 'varchar',
     length: 500,
     nullable: true,
   })
-  image_url: string | null;
+  imageUrl: string | null;
 
   @Column({
+    name: 'video_url',
     type: 'varchar',
     length: 500,
     nullable: true,
   })
-  video_url: string | null;
+  videoUrl: string | null;
 
   @Column({
     type: 'integer',
+    nullable: true,
   })
-  age: number;
+  age: number | null;
 
   @Column({
     type: 'integer',
+    nullable: true,
   })
-  weight: number;
+  weight: number | null;
 
   @Column({
+    name: 'sensitivity_coefficient',
     type: 'integer',
+    nullable: true,
   })
-  sensitivity_coefficient: number;
+  sensitivityCoefficient:
+    number | null;
 
   @Column({
+    name: 'created_at',
     type: 'timestamp',
   })
-  created_at: Date;
+  createdAt: Date;
 
   @Column({
     type: 'integer',
@@ -67,8 +75,9 @@ export class InsulinServiceEntity {
   creator: number;
 
   @Column({
+    name: 'formed_at',
     type: 'timestamp',
     nullable: true,
   })
-  formed_at: Date | null;
+  formedAt: Date | null;
 }
