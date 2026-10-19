@@ -8,10 +8,10 @@ import { InsulinLike } from './entities/insulin-like.entity';
 @Injectable()
 export class InsulinService {
   private readonly defaultImageUrl =
-    'http://localhost:9000/media/breakfast.png';
+  '/media/010.png';
 
-  private readonly defaultVideoUrl =
-    'http://localhost:9000/media/breakfast.mp4';
+private readonly defaultVideoUrl =
+  '/media/020.mp4';
 
   constructor(
     @InjectRepository(InsulinServiceEntity)
@@ -152,7 +152,6 @@ export class InsulinService {
     });
   }
 
-  // Создание черновика
   async createDraft(
     name: string,
   ) {
@@ -185,7 +184,6 @@ export class InsulinService {
     );
   }
 
-  // Публикация черновика
   async publish(
     id: number,
     name: string,

@@ -11,41 +11,27 @@ html {
 
 body {
   position: relative;
-
   width: 450px;
   height: 820px;
-
   margin: 10px auto;
   padding: 0;
-
   overflow: hidden;
-
   font-family: Arial, sans-serif;
-
   color: #17231d;
   background: #f5f8f6;
-
   border: 2px solid #17231d;
   border-radius: 26px;
 }
 
-
-/* =========================
-   ОБЩАЯ СТРАНИЦА
-   ========================= */
-
 .page {
   width: 100%;
   height: 100%;
-
   margin: 0;
   padding: 24px 20px 80px;
-
   overflow-y: auto;
   overflow-x: hidden;
-
   scrollbar-width: thin;
-  scrollbar-color: #c7d3ca transparent;
+  scrollbar-color: #0e7c73 transparent;
 }
 
 .page::-webkit-scrollbar {
@@ -57,7 +43,7 @@ body {
 }
 
 .page::-webkit-scrollbar-thumb {
-  background: #c7d3ca;
+  background: #0e7c73;
   border-radius: 10px;
 }
 
@@ -74,92 +60,53 @@ h1 {
   line-height: 1.2;
 }
 
-
-/* =========================
-   ЛЕНТА
-   ========================= */
-
 .feed-page {
   position: absolute;
-
   inset: 0;
-
   width: 100%;
   height: 100%;
-
   margin: 0;
   padding: 0;
-
   overflow: hidden;
-
   border-radius: 24px;
 }
 
 .feed-card {
   position: absolute;
-
   inset: 0;
-
   width: 100%;
   height: 100%;
-
   overflow: hidden;
-
   background: #ffffff;
-
   border-radius: 24px;
 }
 
 .feed-video {
   display: block;
-
   width: 100%;
   height: 100%;
-
   object-fit: cover;
-
   border-radius: 24px;
 }
 
-
-/* =========================
-   НИЖНЯЯ ОБЛАСТЬ ЛЕНТЫ
-   ========================= */
-
 .feed-overlay {
   position: absolute;
-
   left: 14px;
   right: 14px;
   bottom: 85px;
-
   display: grid;
-
   grid-template-columns: minmax(0, 1fr) 62px;
-
   align-items: end;
-
   gap: 10px;
-
   z-index: 2;
 }
 
-
-/* =========================
-   БЕЛАЯ ИНФОРМАЦИОННАЯ КАРТОЧКА
-   ========================= */
-
 .service-content {
   min-width: 0;
-
   padding: 24px 20px 14px;
-
   border-radius: 20px;
-
   background: #ffffff;
-
   color: #17231d;
-
   box-shadow:
     0 3px 15px
     rgba(0, 0, 0, 0.12);
@@ -167,9 +114,7 @@ h1 {
 
 .service-content h1 {
   margin: 0 0 9px;
-
   color: #17231d;
-
   font-size: 21px;
   line-height: 1.18;
 }
@@ -183,47 +128,27 @@ h1 {
   line-height: 1.4;
 }
 
-
-/* =========================
-   ОПИСАНИЕ — НЕ БОЛЕЕ 2 СТРОК
-   ========================= */
-
 .feed-description {
   display: -webkit-box;
-
   max-height: 34px;
-
   overflow: hidden;
-
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 
-
-/* =========================
-   ДОПОЛНИТЕЛЬНАЯ ИНФОРМАЦИЯ
-   ========================= */
-
 .more-info {
   margin: 0 0 12px;
-
   color: #17231d;
 }
 
 .more-info summary {
   display: inline-block;
-
   padding: 0;
-
   color: #0e7c73;
-
   font-size: 12px;
   font-weight: bold;
-
   cursor: pointer;
-
   list-style: none;
-
   text-decoration: underline;
 }
 
@@ -233,24 +158,19 @@ h1 {
 
 .more-info summary::marker {
   display: none;
-
   content: "";
 }
 
 .more-content {
   margin-top: 8px;
   padding: 10px 12px;
-
   border-radius: 12px;
-
   background: #f1f6f3;
 }
 
 .more-content p {
   margin: 0;
-
   color: #53615a;
-
   font-size: 11px;
   line-height: 1.4;
 }
@@ -274,7 +194,7 @@ h1 {
   margin: 0;
   padding: 10px 5px;
   border-radius: 14px;
-  background: #4f8064;
+  background: #0e7c73;
   text-align: center;
 }
 
@@ -345,7 +265,7 @@ h1 {
   margin: 0;
   padding: 0;
   border-radius: 10px;
-  background: #609878;
+  background: #0e7c73;
   color: #ffffff;
   text-align: center;
   font-size: 18px;
@@ -355,7 +275,7 @@ h1 {
 }
 
 .feed-side-info .next-button:hover {
-  background: #4f8064;
+  background: #0e7c73;
   color: #ffffff;
   text-decoration: none;
 }
@@ -392,7 +312,7 @@ h1 {
 .filter-form input {
   width: 100%;
   padding: 12px;
-  border: 1px solid #d3ddd7;
+  border: 1px solid #0e7c73;
   border-radius: 10px;
   background: #ffffff;
   color: #17231d;
@@ -434,8 +354,8 @@ button {
   margin: 0 0 16px auto;
   padding: 7px 12px;
   border-radius: 20px;
-  background: #e8f5ec;
-  color: #398653;
+  background: #0e7c73;
+  color: #0e7c73;
   text-align: center;
   font-size: 10px;
   font-weight: bold;
@@ -445,177 +365,145 @@ button {
    ДОБАВЛЕНИЕ ФОТО И ВИДЕО
    ========================= */
 
-.media-upload {
-  display: grid;
 
-  grid-template-columns:
-    1fr 1fr;
+/* =========================
+   ДОБАВЛЕНИЕ ФОТО И ВИДЕО
+   ========================= */
 
-  gap: 12px;
-
-  margin-bottom: 20px;
+.add-page {
+  padding-bottom: 100px;
 }
 
+.add-form {
+  gap: 16px;
+}
 
-/* Квадрат загрузки */
-
-.media-upload-box {
-  position: relative;
-
-  width: 100%;
-
-  aspect-ratio: 1 / 1;
-
-  overflow: hidden;
-
+.add-media-fields {
   display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  margin-bottom: 4px;
+}
 
+.add-media-field {
+  width: 100%;
+  min-width: 0;
+}
+
+.add-media-box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 8px;
 
-  border: 2px dashed #9bbca5;
+  width: 100%;
+  height: 145px;
+  padding: 12px;
 
+  overflow: hidden;
+  border: 2px dashed #0e7c73;
   border-radius: 16px;
+  background: #0e7c73;
+  background-image: url('/media/010.png');
+  background-size: cover;
+  background-position: center;
 
-  background: #f4f8f5;
-
+  color: #0e7c73;
   cursor: pointer;
-
   text-align: center;
 }
 
+.add-media-box:hover {
+  border-color: #0e7c73;
+  background: #0e7c73;
+  background-color: rgba(76, 175, 80, 0.2);
+}
 
-/* Фото и видео на фоне */
-
-.media-upload-background {
+.add-media-preview {
   position: absolute;
-
   inset: 0;
+  z-index: 1;
 
+  display: none;
   width: 100%;
   height: 100%;
 
   object-fit: cover;
-
-  opacity: 0.48;
-
-  pointer-events: none;
 }
 
-
-/* Дополнительное приглушение */
-
-.media-upload-overlay {
-  position: absolute;
-
-  inset: 0;
-
-  background: rgba(255, 255, 255, 0.32);
-
-  pointer-events: none;
-}
-
-
-/* Содержимое поверх изображения */
-
-.media-upload-content {
+.add-media-plus,
+.add-media-text {
   position: relative;
-
   z-index: 2;
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-  justify-content: center;
-
-  gap: 8px;
-
-  width: 100%;
-  height: 100%;
-
-  padding: 15px;
-
-  color: #4f795a;
+  pointer-events: none;
 }
 
-
-/* Круг с плюсом */
-
-.media-upload-icon {
+.add-media-plus {
   display: flex;
-
   align-items: center;
   justify-content: center;
 
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
 
   border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
 
-  background: rgba(255, 255, 255, 0.9);
-
-  color: #4f795a;
-
+  color: #0e7c73;
   font-size: 30px;
-
   line-height: 1;
-
-  box-shadow:
-    0 2px 8px
-    rgba(0, 0, 0, 0.12);
 }
 
-
-/* Надпись */
-
-.media-upload-text {
-  padding: 7px 10px;
-
+.add-media-text {
+  padding: 7px 12px;
   border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
 
-  background: rgba(255, 255, 255, 0.9);
-
-  color: #4f795a;
-
+  color: #0e7c73;
   font-size: 13px;
-
   font-weight: 600;
-
-  box-shadow:
-    0 2px 8px
-    rgba(0, 0, 0, 0.08);
 }
 
-
-/* Скрываем стандартный input */
-
-.media-upload-box input[type="file"] {
-  position: absolute;
-
-  width: 1px;
-  height: 1px;
-
-  opacity: 0;
-
-  overflow: hidden;
+.add-media-input {
+  display: none;
 }
 
+.add-name-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 
-/* Наведение */
-
-.media-upload-box:hover {
-  border-color: #65a876;
+  width: 100%;
+  font-size: 11px;
+  font-weight: bold;
 }
 
-.media-upload-box:hover .media-upload-background {
-  opacity: 0.58;
+.add-name-label input {
+  width: 100%;
+  padding: 12px;
+
+  border: 1px solid #0e7c73;
+  border-radius: 10px;
+  background: #ffffff;
+
+  color: #17231d;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
 }
 
-.media-upload-box:hover .media-upload-overlay {
-  background: rgba(255, 255, 255, 0.24);
+.add-name-label input:focus {
+  border-color: #0e7c73;
+  outline: none;
 }
+
+.add-next-button {
+  width: 100%;
+  margin-top: 4px;
+}
+
 
 .filter-form {
   display: flex;
@@ -644,6 +532,7 @@ button {
   grid-template-columns: repeat(2, 1fr);
   gap: 14px;
   padding-bottom: 20px;
+  margin: 0 -13px;
 }
 
 .tile-card {
@@ -785,7 +674,7 @@ button {
 .age-filter input[type="range"] {
   width: 100%;
   margin: 0;
-  accent-color: #075568;
+  accent-color: #0e7c73;
   cursor: pointer;
 }
 
@@ -805,9 +694,22 @@ button {
   padding: 12px;
   border: none;
   border-radius: 7px;
-  background: #075568;
+  background: #0e7c73;
   color: white;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
+}
+
+.add-media-box {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.55)),
+    url('/media/010.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.tile-card button {
+  display: block;
+  margin: 0 auto 12px;
 }
