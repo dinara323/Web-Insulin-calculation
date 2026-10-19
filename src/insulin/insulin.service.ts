@@ -10,7 +10,7 @@ export class InsulinService {
   private readonly defaultImageUrl =
   '/media/010.png';
 
-private readonly defaultVideoUrl =
+  private readonly defaultVideoUrl =
   '/media/020.mp4';
 
   constructor(
