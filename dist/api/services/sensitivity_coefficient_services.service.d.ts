@@ -12,7 +12,7 @@ export declare class ServicesService {
     getFeed(id?: string, next?: string): Promise<Record<string, any>>;
     getDraft(): Promise<Record<string, any> | null>;
     create(dto: CreateServiceDto, image?: UploadedFile, video?: UploadedFile): Promise<Record<string, any>>;
-    publish(id: string): Promise<Record<string, any>>;
+    publish(id: string, dto?: Partial<CreateServiceDto>): Promise<Record<string, any>>;
     delete(id: string): Promise<Record<string, any>>;
     setLike(id: string, value: number): Promise<{
         serviceId: number;

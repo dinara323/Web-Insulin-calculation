@@ -13,12 +13,14 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.InsulinController = void 0;
+const sensitivity_coefficient_session_guard_1 = require("../auth/sensitivity_coefficient_session.guard");
 const common_1 = require("@nestjs/common");
 const sensitivity_coefficient_insulin_service_1 = require("./sensitivity_coefficient_insulin.service");
 let InsulinController = class InsulinController {
     constructor(insulinService) {
         this.insulinService = insulinService;
     }
+    getAuth(res) { return res.render('sensitivity_coefficient_auth'); }
     async getFeed(id, next, like, res) {
         let service;
         if (id) {
@@ -94,6 +96,13 @@ let InsulinController = class InsulinController {
 };
 exports.InsulinController = InsulinController;
 __decorate([
+    (0, common_1.Get)('auth'),
+    __param(0, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], InsulinController.prototype, "getAuth", null);
+__decorate([
     (0, common_1.Get)('feed'),
     __param(0, (0, common_1.Query)('id')),
     __param(1, (0, common_1.Query)('next')),
@@ -105,6 +114,7 @@ __decorate([
 ], InsulinController.prototype, "getFeed", null);
 __decorate([
     (0, common_1.Get)('add'),
+    (0, common_1.UseGuards)(sensitivity_coefficient_session_guard_1.SessionGuard),
     __param(0, (0, common_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

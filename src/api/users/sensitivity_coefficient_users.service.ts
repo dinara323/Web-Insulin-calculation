@@ -1,32 +1,42 @@
 import {
-  BadRequestException,
+  ConflictException,
   Injectable,
-  NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
+import { hash, compare } from 'bcryptjs';
 import { DatabaseService } from '../sensitivity_coefficient_database.service';
 import { RegisterUserDto } from './dto/sensitivity_coefficient_register-user.dto';
-import { getCurrentUser } from '../../common/sensitivity_coefficient_current-user';
-
 @Injectable()
 export class UsersService {
   constructor(private readonly database: DatabaseService) {}
-  async register(dto: RegisterUserDto): Promise<Record<string, any>> {
-    const name = dto.name?.trim();
-    if (!name || name.length > 100)
-      throw new BadRequestException('Имя обязательно, не более 100 символов');
-    return this.database.users.save(this.database.users.create({ name }));
-  }
-  async auth(): Promise<Record<string, any>> {
-    const user = await this.database.users.findOneBy({
-      id: getCurrentUser().id,
-    });
-    if (!user)
-      throw new NotFoundException(
-        'Текущий пользователь не найден в базе данных',
+  async register(dto: RegisterUserDto) {
+    const name = dto.name.trim();
+    if (await this.database.users.existsBy({ name }))
+      throw new ConflictException('Имя уже занято');
+    try {
+      const user = await this.database.users.save(
+        this.database.users.create({
+          name,
+          passwordHash: await hash(dto.password, 12),
+        }),
       );
-    return user;
+      return { id: user.id, name: user.name };
+    } catch (e) {
+      if (e.code === '23505') throw new ConflictException('Имя уже занято');
+      throw e;
+    }
   }
-  logout() {
-    return { message: 'Выход выполнен' };
+  async auth(dto: RegisterUserDto) {
+    const user = await this.database.users
+      .createQueryBuilder('u')
+      .addSelect('u.passwordHash')
+      .where('u.name = :name', { name: dto.name.trim() })
+      .getOne();
+    if (
+      !user?.passwordHash ||
+      !(await compare(dto.password, user.passwordHash))
+    )
+      throw new UnauthorizedException('Неверное имя или пароль');
+    return { id: user.id, name: user.name };
   }
 }

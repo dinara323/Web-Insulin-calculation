@@ -11,28 +11,39 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
+const bcryptjs_1 = require("bcryptjs");
 const sensitivity_coefficient_database_service_1 = require("../sensitivity_coefficient_database.service");
-const sensitivity_coefficient_current_user_1 = require("../../common/sensitivity_coefficient_current-user");
 let UsersService = class UsersService {
     constructor(database) {
         this.database = database;
     }
     async register(dto) {
-        const name = dto.name?.trim();
-        if (!name || name.length > 100)
-            throw new common_1.BadRequestException('Имя обязательно, не более 100 символов');
-        return this.database.users.save(this.database.users.create({ name }));
+        const name = dto.name.trim();
+        if (await this.database.users.existsBy({ name }))
+            throw new common_1.ConflictException('Имя уже занято');
+        try {
+            const user = await this.database.users.save(this.database.users.create({
+                name,
+                passwordHash: await (0, bcryptjs_1.hash)(dto.password, 12),
+            }));
+            return { id: user.id, name: user.name };
+        }
+        catch (e) {
+            if (e.code === '23505')
+                throw new common_1.ConflictException('Имя уже занято');
+            throw e;
+        }
     }
-    async auth() {
-        const user = await this.database.users.findOneBy({
-            id: (0, sensitivity_coefficient_current_user_1.getCurrentUser)().id,
-        });
-        if (!user)
-            throw new common_1.NotFoundException('Текущий пользователь не найден в базе данных');
-        return user;
-    }
-    logout() {
-        return { message: 'Выход выполнен' };
+    async auth(dto) {
+        const user = await this.database.users
+            .createQueryBuilder('u')
+            .addSelect('u.passwordHash')
+            .where('u.name = :name', { name: dto.name.trim() })
+            .getOne();
+        if (!user?.passwordHash ||
+            !(await (0, bcryptjs_1.compare)(dto.password, user.passwordHash)))
+            throw new common_1.UnauthorizedException('Неверное имя или пароль');
+        return { id: user.id, name: user.name };
     }
 };
 exports.UsersService = UsersService;

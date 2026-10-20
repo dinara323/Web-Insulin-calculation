@@ -1,6 +1,7 @@
 export declare class InsulinUser {
     id: number;
     name: string;
+    passwordHash: string | null;
 }
 export declare class InsulinCalculation {
     id: number;

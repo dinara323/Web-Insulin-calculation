@@ -22,10 +22,12 @@ let ServicesService = class ServicesService {
         this.minio = minio;
     }
     async present(service) {
-        const userId = (0, sensitivity_coefficient_current_user_1.getCurrentUser)().id;
+        const userId = (0, sensitivity_coefficient_current_user_1.optionalCurrentUser)()?.id;
         const [likesCount, isLiked] = await Promise.all([
             this.database.likes.countBy({ serviceId: service.id }),
-            this.database.likes.existsBy({ serviceId: service.id, userId }),
+            userId
+                ? this.database.likes.existsBy({ serviceId: service.id, userId })
+                : Promise.resolve(false),
         ]);
         return {
             ...service,
@@ -111,9 +113,7 @@ let ServicesService = class ServicesService {
             throw new common_1.BadRequestException('Второй файл должен быть видео');
         const creatorId = (0, sensitivity_coefficient_current_user_1.getCurrentUser)().id;
         return this.database.source.transaction(async (manager) => {
-            const user = await manager
-                .getRepository('InsulinUser')
-                .findOne({
+            const user = await manager.getRepository('InsulinUser').findOne({
                 where: { id: creatorId },
                 lock: { mode: 'pessimistic_write' },
             });
@@ -138,11 +138,35 @@ let ServicesService = class ServicesService {
             return { ...service, isCreator: 1, isLiked: 0, likesCount: 0 };
         });
     }
-    async publish(id) {
+    async publish(id, dto = {}) {
+        const current = await this.database.calculations.findOneBy({
+            id: this.parseId(id),
+            creatorId: (0, sensitivity_coefficient_current_user_1.getCurrentUser)().id,
+            status: 'черновик',
+        });
+        if (!current)
+            throw new common_1.NotFoundException('Свой черновик не найден');
+        const age = this.optionalNumber(dto.age ?? current.age);
+        const weight = this.optionalNumber(dto.weight ?? current.weight);
+        if (age === null || weight === null || age <= 0 || weight <= 0)
+            throw new common_1.BadRequestException('Для публикации укажите положительные возраст и вес');
+        const name = (dto.name ?? current.name).trim();
+        const description = (dto.description ?? current.description).trim();
+        if (!name || name.length > 200 || description.length > 500)
+            throw new common_1.BadRequestException('Проверьте название и описание');
+        const sensitivityCoefficient = Math.min(6, Math.max(3, Math.round(2.5 + 0.025 * weight + (age >= 60 ? 0.5 : 0))));
         const result = await this.database.calculations
             .createQueryBuilder()
             .update()
-            .set({ status: 'опубликован', formedAt: new Date() })
+            .set({
+            name,
+            description,
+            age,
+            weight,
+            sensitivityCoefficient,
+            status: 'опубликован',
+            formedAt: new Date(),
+        })
             .where({
             id: this.parseId(id),
             creatorId: (0, sensitivity_coefficient_current_user_1.getCurrentUser)().id,

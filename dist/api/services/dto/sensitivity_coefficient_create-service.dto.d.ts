@@ -5,3 +5,7 @@ export declare class CreateServiceDto {
     weight?: number;
     sensitivityCoefficient?: number;
 }
+declare const PublishServiceDto_base: import("@nestjs/common").Type<Partial<CreateServiceDto>>;
+export declare class PublishServiceDto extends PublishServiceDto_base {
+}
+export {};

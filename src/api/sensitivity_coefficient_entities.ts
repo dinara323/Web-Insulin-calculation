@@ -11,6 +11,14 @@ import {
 export class InsulinUser {
   @PrimaryGeneratedColumn() id!: number;
   @Column({ length: 100 }) name!: string;
+  @Column({
+    name: 'password_hash',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+    select: false,
+  })
+  passwordHash!: string | null;
 }
 
 @Entity('insulin_services')
@@ -25,7 +33,17 @@ export class InsulinCalculation {
   videoUrl!: string | null;
   @Column({ type: 'integer', nullable: true }) age!: number | null;
   @Column({ type: 'integer', nullable: true }) weight!: number | null;
-  @Column({ name: 'sensitivity_coefficient', type: 'integer', nullable: true })
+  @Column({
+    name: 'sensitivity_coefficient',
+    type: 'numeric',
+    precision: 6,
+    scale: 2,
+    nullable: true,
+    transformer: {
+      to: (v: number | null) => v,
+      from: (v: string | null) => (v === null ? null : Number(v)),
+    },
+  })
   sensitivityCoefficient!: number | null;
   @Column({ name: 'created_at', type: 'timestamp' }) createdAt!: Date;
   @Column({ name: 'creator' }) creatorId!: number;

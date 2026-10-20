@@ -7,7 +7,10 @@ import { MoreThan, Not } from 'typeorm';
 import { DatabaseService } from '../sensitivity_coefficient_database.service';
 import { InsulinCalculation } from '../sensitivity_coefficient_entities';
 import { MinioService } from '../../storage/sensitivity_coefficient_minio.service';
-import { getCurrentUser } from '../../common/sensitivity_coefficient_current-user';
+import {
+  getCurrentUser,
+  optionalCurrentUser,
+} from '../../common/sensitivity_coefficient_current-user';
 import { CreateServiceDto } from './dto/sensitivity_coefficient_create-service.dto';
 import { ServiceFilterDto } from './dto/sensitivity_coefficient_service-filter.dto';
 import { UploadedFile } from '../../common/sensitivity_coefficient_uploaded-file';
@@ -22,10 +25,12 @@ export class ServicesService {
   private async present(
     service: InsulinCalculation,
   ): Promise<Record<string, any>> {
-    const userId = getCurrentUser().id;
+    const userId = optionalCurrentUser()?.id;
     const [likesCount, isLiked] = await Promise.all([
       this.database.likes.countBy({ serviceId: service.id }),
-      this.database.likes.existsBy({ serviceId: service.id, userId }),
+      userId
+        ? this.database.likes.existsBy({ serviceId: service.id, userId })
+        : Promise.resolve(false),
     ]);
     return {
       ...service,
@@ -126,12 +131,10 @@ export class ServicesService {
     const creatorId = getCurrentUser().id;
     return this.database.source.transaction(async (manager) => {
       // Lock the existing user so concurrent requests cannot create two drafts.
-      const user = await manager
-        .getRepository('InsulinUser')
-        .findOne({
-          where: { id: creatorId },
-          lock: { mode: 'pessimistic_write' },
-        });
+      const user = await manager.getRepository('InsulinUser').findOne({
+        where: { id: creatorId },
+        lock: { mode: 'pessimistic_write' },
+      });
       if (!user) throw new NotFoundException('Текущий пользователь не найден');
       const repo = manager.getRepository(InsulinCalculation);
       if (await repo.existsBy({ status: 'черновик', creatorId }))
@@ -157,11 +160,42 @@ export class ServicesService {
     });
   }
 
-  async publish(id: string): Promise<Record<string, any>> {
+  async publish(
+    id: string,
+    dto: Partial<CreateServiceDto> = {},
+  ): Promise<Record<string, any>> {
+    const current = await this.database.calculations.findOneBy({
+      id: this.parseId(id),
+      creatorId: getCurrentUser().id,
+      status: 'черновик',
+    });
+    if (!current) throw new NotFoundException('Свой черновик не найден');
+    const age = this.optionalNumber(dto.age ?? current.age);
+    const weight = this.optionalNumber(dto.weight ?? current.weight);
+    if (age === null || weight === null || age <= 0 || weight <= 0)
+      throw new BadRequestException(
+        'Для публикации укажите положительные возраст и вес',
+      );
+    const name = (dto.name ?? current.name).trim();
+    const description = (dto.description ?? current.description).trim();
+    if (!name || name.length > 200 || description.length > 500)
+      throw new BadRequestException('Проверьте название и описание');
+    const sensitivityCoefficient = Math.min(
+      6,
+      Math.max(3, Math.round(2.5 + 0.025 * weight + (age >= 60 ? 0.5 : 0))),
+    );
     const result = await this.database.calculations
       .createQueryBuilder()
       .update()
-      .set({ status: 'опубликован', formedAt: new Date() })
+      .set({
+        name,
+        description,
+        age,
+        weight,
+        sensitivityCoefficient,
+        status: 'опубликован',
+        formedAt: new Date(),
+      })
       .where({
         id: this.parseId(id),
         creatorId: getCurrentUser().id,

@@ -22,6 +22,16 @@ __decorate([
     (0, typeorm_1.Column)({ length: 100 }),
     __metadata("design:type", String)
 ], InsulinUser.prototype, "name", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
+        name: 'password_hash',
+        type: 'varchar',
+        length: 255,
+        nullable: true,
+        select: false,
+    }),
+    __metadata("design:type", String)
+], InsulinUser.prototype, "passwordHash", void 0);
 exports.InsulinUser = InsulinUser = __decorate([
     (0, typeorm_1.Entity)('insulin_users')
 ], InsulinUser);
@@ -61,7 +71,17 @@ __decorate([
     __metadata("design:type", Number)
 ], InsulinCalculation.prototype, "weight", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'sensitivity_coefficient', type: 'integer', nullable: true }),
+    (0, typeorm_1.Column)({
+        name: 'sensitivity_coefficient',
+        type: 'numeric',
+        precision: 6,
+        scale: 2,
+        nullable: true,
+        transformer: {
+            to: (v) => v,
+            from: (v) => (v === null ? null : Number(v)),
+        },
+    }),
     __metadata("design:type", Number)
 ], InsulinCalculation.prototype, "sensitivityCoefficient", void 0);
 __decorate([

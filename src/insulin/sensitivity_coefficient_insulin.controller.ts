@@ -1,4 +1,5 @@
-import { Controller, Get, Query, Res } from '@nestjs/common';
+import { SessionGuard } from '../auth/sensitivity_coefficient_session.guard';
+import { UseGuards, Controller, Get, Query, Res } from '@nestjs/common';
 
 import { Response } from 'express';
 
@@ -7,6 +8,9 @@ import { InsulinService } from './sensitivity_coefficient_insulin.service';
 @Controller('insulin')
 export class InsulinController {
   constructor(private readonly insulinService: InsulinService) {}
+
+  @Get('auth')
+  getAuth(@Res() res: Response) { return res.render('sensitivity_coefficient_auth'); }
 
   @Get('feed')
   async getFeed(
@@ -53,6 +57,7 @@ export class InsulinController {
   }
 
   @Get('add')
+  @UseGuards(SessionGuard)
   async getAdd(@Res() res: Response) {
     const draft = await this.insulinService.getDraft();
 

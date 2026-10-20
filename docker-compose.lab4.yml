@@ -1,0 +1,12 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: insulin_redis
+    ports:
+      - "127.0.0.1:6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - insulin-redis-data:/data
+    restart: unless-stopped
+volumes:
+  insulin-redis-data:

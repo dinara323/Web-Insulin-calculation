@@ -1,5 +1,5 @@
 import { ServicesService } from './sensitivity_coefficient_services.service';
-import { CreateServiceDto } from './dto/sensitivity_coefficient_create-service.dto';
+import { CreateServiceDto, PublishServiceDto } from './dto/sensitivity_coefficient_create-service.dto';
 import { ServiceFilterDto } from './dto/sensitivity_coefficient_service-filter.dto';
 import { UploadedFile } from '../../common/sensitivity_coefficient_uploaded-file';
 export declare class ServicesController {
@@ -12,7 +12,7 @@ export declare class ServicesController {
         image?: UploadedFile[];
         video?: UploadedFile[];
     }): Promise<Record<string, any>>;
-    publish(id: string): Promise<Record<string, any>>;
+    publish(id: string, dto: PublishServiceDto): Promise<Record<string, any>>;
     delete(id: string): Promise<Record<string, any>>;
     setLike(id: string, value: number): Promise<{
         serviceId: number;
