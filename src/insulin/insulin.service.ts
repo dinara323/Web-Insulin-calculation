@@ -1,26 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository,Between,MoreThanOrEqual, } from 'typeorm';
+import { Repository, Between, MoreThanOrEqual } from 'typeorm';
 
 import { InsulinServiceEntity } from './entities/insulin-service.entity';
 import { InsulinLike } from './entities/insulin-like.entity';
 
 @Injectable()
 export class InsulinService {
-  private readonly defaultImageUrl =
-  '/media/010.png';
+  private readonly defaultImageUrl = '/media/010.png';
 
-  private readonly defaultVideoUrl =
-  '/media/020.mp4';
+  private readonly defaultVideoUrl = '/media/020.mp4';
 
   constructor(
     @InjectRepository(InsulinServiceEntity)
-    private readonly serviceRepository:
-      Repository<InsulinServiceEntity>,
+    private readonly serviceRepository: Repository<InsulinServiceEntity>,
 
     @InjectRepository(InsulinLike)
-    private readonly likeRepository:
-      Repository<InsulinLike>,
+    private readonly likeRepository: Repository<InsulinLike>,
   ) {}
 
   async getFirstPublished() {
@@ -53,11 +49,10 @@ export class InsulinService {
       },
     });
   }
-  
+
   async getById(id: number) {
-    const rows =
-      await this.serviceRepository.query(
-        `
+    const rows = await this.serviceRepository.query(
+      `
           SELECT
             id,
             name,
@@ -75,16 +70,15 @@ export class InsulinService {
           WHERE id = $1
             AND status = 'опубликован'
         `,
-        [id],
-      );
+      [id],
+    );
 
     return rows[0] ?? null;
   }
 
   async getNext(id: number) {
-    const rows =
-      await this.serviceRepository.query(
-        `
+    const rows = await this.serviceRepository.query(
+      `
           SELECT
             id,
             name,
@@ -104,8 +98,8 @@ export class InsulinService {
           ORDER BY id ASC
           LIMIT 1
         `,
-        [id],
-      );
+      [id],
+    );
 
     if (rows[0]) {
       return rows[0];
@@ -114,19 +108,12 @@ export class InsulinService {
     return this.getFirstPublished();
   }
 
-  async filterByAge(
-    ageFrom?: number,
-    ageTo?: number,
-  ) {
-    if (
-      ageFrom === undefined
-    ) {
+  async filterByAge(ageFrom?: number, ageTo?: number) {
+    if (ageFrom === undefined) {
       return this.getPublishedServices();
     }
 
-    if (
-      ageTo === undefined
-    ) {
+    if (ageTo === undefined) {
       return this.serviceRepository.find({
         where: {
           status: 'опубликован',
@@ -141,10 +128,7 @@ export class InsulinService {
     return this.serviceRepository.find({
       where: {
         status: 'опубликован',
-        age: Between(
-          ageFrom,
-          ageTo,
-        ),
+        age: Between(ageFrom, ageTo),
       },
       order: {
         id: 'ASC',
@@ -152,36 +136,28 @@ export class InsulinService {
     });
   }
 
-  async createDraft(
-    name: string,
-  ) {
-    const draft =
-      this.serviceRepository.create({
-        name,
-        description: '',
-        status: 'черновик',
+  async createDraft(name: string) {
+    const draft = this.serviceRepository.create({
+      name,
+      description: '',
+      status: 'черновик',
 
-        imageUrl:
-          this.defaultImageUrl,
+      imageUrl: this.defaultImageUrl,
 
-        videoUrl:
-          this.defaultVideoUrl,
+      videoUrl: this.defaultVideoUrl,
 
-        age: null,
-        weight: null,
-        sensitivityCoefficient: null,
+      age: null,
+      weight: null,
+      sensitivityCoefficient: null,
 
-        creator: 1,
+      creator: 1,
 
-        createdAt:
-          new Date(),
+      createdAt: new Date(),
 
-        formedAt: null,
-      });
+      formedAt: null,
+    });
 
-    return this.serviceRepository.save(
-      draft,
-    );
+    return this.serviceRepository.save(draft);
   }
 
   async publish(
@@ -192,14 +168,13 @@ export class InsulinService {
     weight: number,
     sensitivityCoefficient: number,
   ) {
-    const service =
-      await this.serviceRepository.findOne({
-        where: {
-          id,
-          status: 'черновик',
-          creator: 1,
-        },
-      });
+    const service = await this.serviceRepository.findOne({
+      where: {
+        id,
+        status: 'черновик',
+        creator: 1,
+      },
+    });
 
     if (!service) {
       return undefined;
@@ -207,30 +182,22 @@ export class InsulinService {
 
     service.name = name;
 
-    service.description =
-      description;
+    service.description = description;
 
     service.age = age;
 
     service.weight = weight;
 
-    service.sensitivityCoefficient =
-      sensitivityCoefficient;
+    service.sensitivityCoefficient = sensitivityCoefficient;
 
-    service.status =
-      'опубликован';
+    service.status = 'опубликован';
 
-    service.formedAt =
-      new Date();
+    service.formedAt = new Date();
 
-    return this.serviceRepository.save(
-      service,
-    );
+    return this.serviceRepository.save(service);
   }
 
-  async deleteBySql(
-    id: number,
-  ) {
+  async deleteBySql(id: number) {
     await this.serviceRepository.query(
       `
         UPDATE insulin_services
@@ -242,22 +209,14 @@ export class InsulinService {
     );
   }
 
-  calculateXE(
-    age: number,
-    weight: number,
-  ): number {
+  calculateXE(age: number, weight: number): number {
     let ageAdjustment = 0;
 
     if (age >= 60) {
       ageAdjustment = 0.5;
     }
 
-    let xe =
-      Math.round(
-        2.5 +
-          0.025 * weight +
-          ageAdjustment,
-      );
+    let xe = Math.round(2.5 + 0.025 * weight + ageAdjustment);
 
     if (xe < 3) {
       xe = 3;
@@ -270,19 +229,11 @@ export class InsulinService {
     return xe;
   }
 
-  calculateDose(
-    xe: number,
-    sensitivityCoefficient: number,
-  ): number {
-    return (
-      xe *
-      sensitivityCoefficient
-    );
+  calculateDose(xe: number, sensitivityCoefficient: number): number {
+    return xe * sensitivityCoefficient;
   }
 
-  async getLikesCount(
-    serviceId: number,
-  ): Promise<number> {
+  async getLikesCount(serviceId: number): Promise<number> {
     return this.likeRepository.count({
       where: {
         serviceId,

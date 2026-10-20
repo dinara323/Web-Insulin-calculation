@@ -10,19 +10,11 @@ import { InsulinLike } from './entities/insulin-like.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      InsulinUser,
-      InsulinServiceEntity,
-      InsulinLike,
-    ]),
+    TypeOrmModule.forFeature([InsulinUser, InsulinServiceEntity, InsulinLike]),
   ],
 
-  controllers: [
-    InsulinController,
-  ],
+  controllers: [InsulinController],
 
-  providers: [
-    InsulinService,
-  ],
+  providers: [InsulinService],
 })
 export class InsulinModule {}

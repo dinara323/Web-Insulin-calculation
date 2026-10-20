@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Query,
-  Res,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
 
 import { Response } from 'express';
 
@@ -13,10 +6,7 @@ import { InsulinService } from './insulin.service';
 
 @Controller('insulin')
 export class InsulinController {
-  constructor(
-    private readonly insulinService:
-      InsulinService,
-  ) {}
+  constructor(private readonly insulinService: InsulinService) {}
 
   // 1. GET — лента
   @Get('feed')
@@ -34,55 +24,33 @@ export class InsulinController {
 
     if (id) {
       if (next === 'true') {
-        service =
-          await this.insulinService.getNext(
-            Number(id),
-          );
+        service = await this.insulinService.getNext(Number(id));
       } else {
-        service =
-          await this.insulinService.getById(
-            Number(id),
-          );
+        service = await this.insulinService.getById(Number(id));
       }
     } else {
-      service =
-        await this.insulinService.getFirstPublished();
+      service = await this.insulinService.getFirstPublished();
     }
 
     if (!service) {
-      return res
-        .status(404)
-        .send(
-          'Услуга не найдена',
-        );
+      return res.status(404).send('Услуга не найдена');
     }
 
-    const xe =
-      this.insulinService.calculateXE(
-        service.age,
-        service.weight,
-      );
+    const xe = this.insulinService.calculateXE(service.age, service.weight);
 
-    const dose =
-      this.insulinService.calculateDose(
-        xe,
-        service.sensitivityCoefficient,
-      );
-
-    const likesCount =
-      await this.insulinService.getLikesCount(
-        service.id,
-      );
-
-    return res.render(
-      'feed',
-      {
-        service,
-        xe,
-        dose,
-        likesCount,
-      },
+    const dose = this.insulinService.calculateDose(
+      xe,
+      service.sensitivityCoefficient,
     );
+
+    const likesCount = await this.insulinService.getLikesCount(service.id);
+
+    return res.render('feed', {
+      service,
+      xe,
+      dose,
+      likesCount,
+    });
   }
 
   // 2. GET — добавление
@@ -91,62 +59,42 @@ export class InsulinController {
     @Res()
     res: Response,
   ) {
-    const service =
-      await this.insulinService.getDraft();
+    const service = await this.insulinService.getDraft();
 
-    let selectedCoefficient1 =
-      '';
+    let selectedCoefficient1 = '';
 
-    let selectedCoefficient2 =
-      '';
+    let selectedCoefficient2 = '';
 
-    let selectedCoefficient3 =
-      '';
+    let selectedCoefficient3 = '';
 
-    let selectedCoefficient4 =
-      '';
+    let selectedCoefficient4 = '';
 
     if (service) {
-      if (
-        service.sensitivityCoefficient === 1
-      ) {
-        selectedCoefficient1 =
-          'selected';
+      if (service.sensitivityCoefficient === 1) {
+        selectedCoefficient1 = 'selected';
       }
 
-      if (
-        service.sensitivityCoefficient === 2
-      ) {
-        selectedCoefficient2 =
-          'selected';
+      if (service.sensitivityCoefficient === 2) {
+        selectedCoefficient2 = 'selected';
       }
 
-      if (
-        service.sensitivityCoefficient === 3
-      ) {
-        selectedCoefficient3 =
-          'selected';
+      if (service.sensitivityCoefficient === 3) {
+        selectedCoefficient3 = 'selected';
       }
 
-      if (
-        service.sensitivityCoefficient === 4
-      ) {
-        selectedCoefficient4 =
-          'selected';
+      if (service.sensitivityCoefficient === 4) {
+        selectedCoefficient4 = 'selected';
       }
     }
 
-    return res.render(
-      'add',
-      {
-        service,
+    return res.render('add', {
+      service,
 
-        selectedCoefficient1,
-        selectedCoefficient2,
-        selectedCoefficient3,
-        selectedCoefficient4,
-      },
-    );
+      selectedCoefficient1,
+      selectedCoefficient2,
+      selectedCoefficient3,
+      selectedCoefficient4,
+    });
   }
 
   // 3. GET — плитка
@@ -158,13 +106,9 @@ export class InsulinController {
     @Res()
     res: Response,
   ) {
-    let ageFrom:
-      | number
-      | undefined;
+    let ageFrom: number | undefined;
 
-    let ageTo:
-      | number
-      | undefined;
+    let ageTo: number | undefined;
 
     let ageSlider = 0;
 
@@ -191,35 +135,21 @@ export class InsulinController {
       ageSlider = 3;
     }
 
-    const services =
-      await this.insulinService.filterByAge(
-        ageFrom,
-        ageTo,
-      );
+    const services = await this.insulinService.filterByAge(ageFrom, ageTo);
 
-    const servicesWithLikes =
-      await Promise.all(
-        services.map(
-          async (service) => ({
-            ...service,
+    const servicesWithLikes = await Promise.all(
+      services.map(async (service) => ({
+        ...service,
 
-            likesCount:
-              await this.insulinService.getLikesCount(
-                service.id,
-              ),
-          }),
-        ),
-      );
-
-    return res.render(
-      'tile',
-      {
-        services:
-          servicesWithLikes,
-
-        ageSlider,
-      },
+        likesCount: await this.insulinService.getLikesCount(service.id),
+      })),
     );
+
+    return res.render('tile', {
+      services: servicesWithLikes,
+
+      ageSlider,
+    });
   }
 
   // 4. POST — создание черновика
@@ -231,13 +161,9 @@ export class InsulinController {
     @Res()
     res: Response,
   ) {
-    await this.insulinService.createDraft(
-      name,
-    );
+    await this.insulinService.createDraft(name);
 
-    return res.redirect(
-      '/insulin/add',
-    );
+    return res.redirect('/insulin/add');
   }
 
   // 5. POST — публикация
@@ -258,9 +184,7 @@ export class InsulinController {
     @Body('weight')
     weight: string,
 
-    @Body(
-      'sensitivityCoefficient',
-    )
+    @Body('sensitivityCoefficient')
     sensitivityCoefficient: string,
 
     @Res()
@@ -272,14 +196,10 @@ export class InsulinController {
       description,
       Number(age),
       Number(weight),
-      Number(
-        sensitivityCoefficient,
-      ),
+      Number(sensitivityCoefficient),
     );
 
-    return res.redirect(
-      `/insulin/feed?id=${id}`,
-    );
+    return res.redirect(`/insulin/feed?id=${id}`);
   }
 
   // 6. POST — логическое удаление
@@ -292,12 +212,8 @@ export class InsulinController {
     @Res()
     res: Response,
   ) {
-    await this.insulinService.deleteBySql(
-      Number(id),
-    );
+    await this.insulinService.deleteBySql(Number(id));
 
-    return res.redirect(
-      '/insulin/tile',
-    );
+    return res.redirect('/insulin/tile');
   }
 }

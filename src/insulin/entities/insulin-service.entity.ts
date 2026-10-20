@@ -2,9 +2,18 @@ import {
   Column,
   Entity,
   PrimaryGeneratedColumn,
+  Index,
+  JoinColumn,
+  ManyToOne,
 } from 'typeorm';
 
+import { InsulinUser } from './insulin-user.entity';
+
 @Entity('insulin_services')
+@Index('uq_insulin_services_one_draft', ['creator'], {
+  unique: true,
+  where: "status = 'черновик'",
+})
 export class InsulinServiceEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -18,8 +27,9 @@ export class InsulinServiceEntity {
   @Column({
     type: 'varchar',
     length: 500,
+    nullable: true,
   })
-  description: string;
+  description: string | null;
 
   @Column({
     type: 'varchar',
@@ -57,7 +67,13 @@ export class InsulinServiceEntity {
 
   @Column({
     name: 'sensitivity_coefficient',
-    type: 'integer',
+    type: 'numeric',
+    precision: 6,
+    scale: 2,
+    transformer: {
+      to: (value: number | null) => value,
+      from: (value: string | null) => (value === null ? null : Number(value)),
+    },
     nullable: true,
   })
   sensitivityCoefficient: number | null;
@@ -72,6 +88,13 @@ export class InsulinServiceEntity {
     type: 'integer',
   })
   creator: number;
+
+  @ManyToOne(() => InsulinUser, { nullable: false, onDelete: 'NO ACTION' })
+  @JoinColumn({
+    name: 'creator',
+    foreignKeyConstraintName: 'fk_insulin_services_creator',
+  })
+  creatorUser: InsulinUser;
 
   @Column({
     name: 'formed_at',

@@ -1,9 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import {
-  ConfigModule,
-  ConfigService,
-} from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -20,36 +17,18 @@ import { InsulinModule } from './insulin/insulin.module';
 
       inject: [ConfigService],
 
-      useFactory: (
-        configService: ConfigService,
-      ) => ({
+      useFactory: (configService: ConfigService) => ({
         type: 'postgres',
 
-        host:
-          configService.get<string>(
-            'DB_HOST',
-          ),
+        host: configService.get<string>('DB_HOST'),
 
-        port: Number(
-          configService.get<string>(
-            'DB_PORT',
-          ),
-        ),
+        port: Number(configService.get<string>('DB_PORT')),
 
-        username:
-          configService.get<string>(
-            'DB_USERNAME',
-          ),
+        username: configService.get<string>('DB_USERNAME'),
 
-        password:
-          configService.get<string>(
-            'DB_PASSWORD',
-          ),
+        password: configService.get<string>('DB_PASSWORD'),
 
-        database:
-          configService.get<string>(
-            'DB_DATABASE',
-          ),
+        database: configService.get<string>('DB_DATABASE'),
 
         autoLoadEntities: true,
 
