@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>
+    Плитка — Инсулин
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="/css/sensitivity_coefficient_style.css"
+  >
+
+</head>
+
+<body>
+
+<main class="page">
+
+  <form
+    class="age-filter"
+    method="GET"
+    action="/insulin/tile"
+  >
+
+    <label
+      class="age-filter-title"
+      for="ageRange"
+    >
+      Фильтр по возрасту
+    </label>
+
+    <input
+      class="age-slider"
+      type="range"
+      id="ageRange"
+      name="ageRange"
+      min="0"
+      max="3"
+      step="1"
+      value="{{ageSlider}}"
+    >
+
+    <div class="age-range-labels">
+
+      <span>
+        18–39
+      </span>
+
+      <span>
+        40–59
+      </span>
+
+      <span>
+        60–89
+      </span>
+
+      <span>
+        80+
+      </span>
+
+    </div>
+
+    <button
+      class="age-filter-button"
+      type="submit"
+    >
+      Показать
+    </button>
+  </form>
+
+  <section class="tile-grid">
+
+    {{#each services}}
+      <a
+        class="tile-card"
+        href="/insulin/feed?id={{id}}"
+      >
+        <img
+          src="{{imageUrl}}"
+          alt="{{name}}"
+        >
+        <div class="tile-info">
+
+          <h2>
+            {{name}}
+          </h2>
+
+          <p>
+            Возраст: {{age}} лет
+          </p>
+
+          <p>
+            Вес: {{weight}} кг
+          </p>
+
+          <p>
+            КЧИ: {{sensitivity_coefficient}}
+          </p>
+
+          <p>
+            ♥ {{likesCount}}
+          </p>
+        </div>
+      </a>
+    {{/each}}
+  </section>
+</main>
+
+<nav class="bottom-nav">
+
+  <a href="/insulin/feed">
+    Лента
+  </a>
+
+  <a href="/insulin/add">
+    Добавление
+  </a>
+
+  <a
+    class="active"
+    href="/insulin/tile"
+  >
+    Плитка
+  </a>
+
+</nav>
+</body>
+</html>

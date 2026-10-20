@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>
+    Лента — Инсулин
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="/css/sensitivity_coefficient_style.css"
+  >
+</head>
+
+<body>
+
+<main class="feed-page">
+
+  {{#if service}}
+
+    <article class="feed-card">
+
+      <video
+        class="feed-video"
+        src="{{service.videoUrl}}"
+        autoplay
+        muted
+        loop
+        playsinline
+        controls
+      ></video>
+
+      <div class="feed-overlay">
+
+        <div class="service-content">
+
+          <h1>
+            {{service.name}}
+          </h1>
+
+          <p class="feed-description">
+            {{service.description}}
+          </p>
+
+          <details class="more-info">
+
+            <summary>
+              Ещё ↓
+            </summary>
+
+            <div class="more-content">
+
+              <p>
+                {{service.moreText}}
+              </p>
+            </div>
+
+          </details>
+
+        </div>
+
+        <div class="feed-side-info">
+
+          <div class="parameter">
+
+            <span>
+              Возраст
+            </span>
+
+            <strong>
+              {{service.age}} лет
+            </strong>
+
+          </div>
+
+          <div class="parameter">
+
+            <span>
+              Вес
+            </span>
+
+            <strong>
+              {{service.weight}} кг
+            </strong>
+
+          </div>
+
+          <div class="parameter">
+
+            <span>
+              КЧИ
+            </span>
+
+            <strong>
+              {{service.sensitivity_coefficient}}
+            </strong>
+
+          </div>
+
+          <a
+            class="like-button"
+            href="/insulin/feed?id={{service.id}}&like=true"
+          >
+
+            <span>
+              ♡
+            </span>
+
+            <span>
+              {{likesCount}}
+            </span>
+
+          </a>
+
+          <a
+            class="next-button"
+            href="/insulin/feed?id={{service.id}}&next=true"
+          >
+            →
+          </a>
+
+        </div>
+      </div>
+    </article>
+
+  {{else}}
+    <p>
+      Услуга не найдена.
+    </p>
+  {{/if}}
+
+  <nav class="bottom-nav">
+
+    <a
+      class="active"
+      href="/insulin/feed"
+    >
+      Лента
+    </a>
+
+    <a href="/insulin/add">
+      Добавление
+    </a>
+
+    <a href="/insulin/tile">
+      Плитка
+    </a>
+  </nav>
+</main>
+</body>
+
+</html>

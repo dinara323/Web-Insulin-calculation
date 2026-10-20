@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>
+    Добавление — Инсулин
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="/css/sensitivity_coefficient_style.css"
+  >
+
+</head>
+
+<body>
+
+<main class="page">
+
+  <section class="page-card">
+
+    <h1>
+      Новый расчёт
+    </h1>
+
+    {{#if service}}
+
+      <div class="draft-badge">
+        ЧЕРНОВИК
+      </div>
+
+      <form class="service-form">
+
+        <div class="media-upload">
+
+          <label class="media-upload-box">
+
+            <input
+              type="file"
+              name="image"
+              accept="image/*"
+            >
+
+            <img
+              class="media-upload-background"
+              src="{{service.imageUrl}}"
+              alt=""
+            >
+            <div class="media-upload-overlay"></div>
+            <div class="media-upload-content">
+
+              <span class="media-upload-icon">
+                +
+              </span>
+              <span class="media-upload-text">
+                Добавить фото
+              </span>
+
+            </div>
+          </label>
+
+          <label class="media-upload-box">
+
+            <input
+              type="file"
+              name="video"
+              accept="video/*"
+            >
+
+            <video
+              class="media-upload-background"
+              src="{{service.videoUrl}}"
+              muted
+              loop
+              playsinline
+              autoplay
+            ></video>
+
+            <div class="media-upload-overlay"></div>
+
+            <div class="media-upload-content">
+
+              <span class="media-upload-icon">
+                +
+              </span>
+
+              <span class="media-upload-text">
+                Добавить видео
+              </span>
+            </div>
+          </label>
+
+        </div>
+
+        <label>
+
+          Название
+
+          <input
+            type="text"
+            name="name"
+            value="{{service.name}}"
+            placeholder="Введите название"
+          >
+
+        </label>
+
+        <label>
+
+          Описание
+
+          <textarea
+            name="description"
+            placeholder="Введите короткое описание"
+          >{{service.description}}</textarea>
+
+        </label>
+
+        <label>
+          Возраст
+          <input
+            type="number"
+            name="age"
+            min="18"
+            max="100"
+            placeholder="Введите возраст"
+          >
+        </label>
+
+        <label>
+
+          Вес, кг
+
+          <input
+            type="number"
+            name="weight"
+            min="1"
+            step="0.1"
+            placeholder="Введите вес"
+          >
+
+        </label>
+      </form>
+    {{else}}
+      <p>
+        Черновик не найден.
+      </p>
+    {{/if}}
+
+  </section>
+
+  <nav class="bottom-nav">
+    <a href="/insulin/feed">
+      Лента
+    </a>
+
+    <a
+      class="active"
+      href="/insulin/add"
+    >
+      Добавление
+    </a>
+
+    <a href="/insulin/tile">
+      Плитка
+    </a>
+
+  </nav>
+</main>
+</body>
+</html>

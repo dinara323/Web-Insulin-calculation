@@ -1,99 +1,87 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Расчёт инсулина — лабораторные №2 и №3
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+NestJS, TypeScript, PostgreSQL, TypeORM, Handlebars и MinIO.
+API и страницы используют одну базу данных. HTTP-методы и URL исходного проекта сохранены.
+Расчёт дозы — учебный пример из исходной лабораторной.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Запуск
 
-## Description
+В WSL используйте Linux Node.js (`nvm use 20`), затем `npm install`.
+Настройте локальный `.env`: `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`,
+`DB_DATABASE`; для MinIO — `MINIO_ENDPOINT`, `MINIO_PORT`, `MINIO_USE_SSL`,
+`MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`, `MINIO_BUCKET`, `MINIO_PUBLIC_URL`.
+Секреты в репозиторий не добавляются.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Запустите PostgreSQL с существующими таблицами и MinIO (`docker compose up -d`).
+В текущем compose описан только MinIO: PostgreSQL запускается отдельно.
+Автоматическое изменение схемы отключено (`synchronize: false`), существующие данные сохраняются.
+Пользователь с ID 1 должен существовать: `getCurrentUser()` — фиксированная заглушка лабораторной.
+Для просмотра медиа bucket должен допускать чтение или ссылки должны обслуживаться отдельно;
+приложение не меняет политику доступа к bucket автоматически.
 
-## Project setup
-
-```bash
-$ npm install
+```sh
+npm run build
+npm run start:dev
 ```
 
-## Compile and run the project
+Страницы: `/insulin/feed`, `/insulin/add`, `/insulin/tile`.
+Форма `/insulin/add` отображает текущий черновик; создание и публикация выполняются через API.
 
-```bash
-# development
-$ npm run start
+## HTTP API
 
-# watch mode
-$ npm run start:dev
+| Метод | URL | Назначение |
+|---|---|---|
+| GET | `/api/services` | Опубликованные расчёты; фильтры `name`, `ageFrom`, `ageTo` |
+| GET | `/api/services/feed` | Первая карточка; `id` — конкретная; `id=…&next=true` — следующая с циклическим переходом |
+| GET | `/api/services/draft` | Черновик текущего пользователя или пустое значение |
+| POST | `/api/services` | Создать черновик; `multipart/form-data`: `name`, `description`, `age`, `weight`, `sensitivityCoefficient`, файлы `image`, `video` |
+| PUT | `/api/services/:id/publish` | Опубликовать собственный черновик |
+| DELETE | `/api/services/:id` | Логически удалить собственную запись |
+| POST | `/api/services/:id/like` | JSON `{"value":1}` — лайк, `{"value":0}` — отмена |
+| POST | `/api/users/register` | JSON `{"name":"Имя"}` |
+| POST | `/api/users/auth` | Заглушка входа, возвращает пользователя 1 |
+| POST | `/api/users/logout` | Заглушка выхода |
 
-# production mode
-$ npm run start:prod
-```
+Создание возвращает 201, GET/PUT/DELETE — 200; ошибки ввода — 400, отсутствующая запись — 404.
+`status`, `creatorId`, `createdAt`, `formedAt` задаются сервером.
+Поля `isCreator` и `isLiked` в карточках возвращаются как 0/1.
+У пользователя может быть один черновик: проверка защищена блокировкой строки пользователя в транзакции.
+Числовые поля соответствуют существующим целочисленным столбцам БД.
 
-## Run tests
+## Таблицы
 
-```bash
-# unit tests
-$ npm run test
+| Таблица | Поля |
+|---|---|
+| `insulin_users` | `id` integer PK, `name` varchar(100) |
+| `insulin_services` | `id` integer PK, `name` varchar(200), `description` varchar(500), `status` varchar(20), `image_url`/`video_url` varchar(500) nullable, `age`/`weight`/`sensitivity_coefficient` integer nullable, `created_at` timestamp, `creator` integer, `formed_at` timestamp nullable |
+| `insulin_likes` | `user_id`, `service_id` integer, составной PK |
 
-# e2e tests
-$ npm run test:e2e
+Связи описаны в TypeORM: создатель → пользователь, лайк → пользователь и расчёт.
+В существующей локальной БД внешние ключи отсутствуют; приложение не меняет схему автоматически.
 
-# test coverage
-$ npm run test:cov
-```
+## Postman
 
-## Deployment
+Локальная JSON-коллекция находится в `postman/`, все 10 исходных запросов сохранены.
+`baseUrl=http://localhost:3000`; список сохраняет `publishedServiceId`, создание — `serviceId`.
+Для файлов включите поля `image`, `video` в Body → form-data и выберите локальные файлы.
+Коэффициент передаётся под именем `sensitivityCoefficient`.
+Сценарий: список → лента → черновик → создание → публикация → список → лайк → отмена лайка.
+Удаление выполняйте только для собственной тестовой записи.
+Для перехода ленты используйте `/api/services/feed?id={{publishedServiceId}}&next=true`.
+JSON-коллекция на диске и открытый workspace Postman сохраняются отдельно.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## Проверка
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+`npm run build` — сборка. `npm run test:e2e -- --runInBand` — 7 проверок с PostgreSQL:
+валидация, один черновик, публикация/фильтр/страницы, следующая карточка и цикл,
+идемпотентный лайк, логическое удаление, регистрация/заглушки входа и выхода.
+Тестовые записи создаются внутри одной транзакции и откатываются в конце;
+счётчики sequence могут увеличиваться. Загрузка MinIO в тестах подменена: реальный upload ими не проверяется.
 
-```bash
-$ npm install -g mau
-$ mau deploy
-```
+## Имена файлов
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Исходники, тесты, шаблоны, стили и файл коллекции Postman переименованы с префиксом
+`sensitivity_coefficient_`. Это рабочие файлы с реализацией, без файлов-переадресаций.
+Импорты, ссылки на шаблоны и стили, точка запуска Nest и настройки тестов обновлены.
+Служебные имена package.json, package-lock.json, README.md, конфигурации Nest,
+TypeScript, Jest, Docker и .env оставлены стандартными.
