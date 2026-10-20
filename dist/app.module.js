@@ -9,12 +9,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const insulin_module_1 = require("./insulin/insulin.module");
+const api_module_1 = require("./api/api.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [insulin_module_1.InsulinModule],
+        imports: [
+            insulin_module_1.InsulinModule,
+            api_module_1.ApiModule,
+        ],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
